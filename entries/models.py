@@ -1,7 +1,13 @@
+# core
 from django.db import models
+
+# Get time now
 from django.utils import timezone
+
+# Default user model
 from django.contrib.auth.models import User
 
+# entry model
 class Entry(models.Model):
     author = models.ForeignKey(User)
     title = models.CharField(max_length=150)
@@ -18,11 +24,10 @@ class Entry(models.Model):
     def __str__(self):
         return self.title
 
+# Add new fields to default user model
 class UserProfile(models.Model):
-
     user = models.OneToOneField(User)
     website = models.URLField(blank=True)
-    # picture = models.ImageField(upload_to='profile_images', blank=True)
 
     def __str__(self):
         return self.user.username

@@ -1,90 +1,85 @@
-from django.utils import timezone
+# Core
 from django.shortcuts import render, get_object_or_404, redirect
-from entries.models import Entry
 from django.http import HttpResponse, HttpResponseRedirect
+
+# Combine query sets
 from itertools import chain
-from .forms import UserForm, UserProfileForm
+
+# Authentication process
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-## to do
-## -create entry
-## -add photos to entries and videos
-## -crispy forms
-## -redux registration
-## -login locations
-## -sent email
-## -look edit profile and entry
-## comments
+# Ours
+from .forms import UserForm, UserProfileForm, EntryForm
+from .models import Entry
 
+# Entries sorted according to rates
 def entries_home(request):
     context = {}
     user = request.user
     if user.is_active:
-        time_now = timezone.now()
-        all_entries = Entry.objects.all()
-        all_entries = all_entries.extra(order_by = ['-rate_total'])
+        all_entries = Entry.objects.all().extra(order_by = ['-rate_total'])
         up_entries = user.up_entries.all()
         down_entries = user.down_entries.all()
-        context = {'time_now': time_now, 
-                   'all_entries': all_entries, 
+        context = {'all_entries': all_entries, 
                    'user':user,
                    'up_entries': up_entries,
                    'down_entries': down_entries, }
     return render(request, 'entries/entries_home.html', context)
 
+# Entries sorted according to views
 def entries_popular(request):
     context = {}
     user = request.user
     if user.is_active:
-        time_now = timezone.now()
-        all_entries = Entry.objects.all()
-        all_entries = all_entries.extra(order_by = ['-views'])
+        all_entries = Entry.objects.all().extra(order_by = ['-views'])
         up_entries = user.up_entries.all()
         down_entries = user.down_entries.all()
-        context = {'time_now': time_now, 
-                   'all_entries': all_entries, 
+        context = {'all_entries': all_entries, 
                    'user':user,
                    'up_entries': up_entries,
-                   'down_entries': down_entries, }
+                   'down_entries': down_entries,}
     return render(request, 'entries/entries_home.html', context)
 
+# Entries sorted according to created date
 def entries_new(request):
-    time_now = timezone.now()
-    all_entries = Entry.objects.all()
-    all_entries = all_entries.extra(order_by = ['-created_date'])
+    context = {}
     user = request.user
-    up_entries = user.up_entries.all()
-    down_entries = user.down_entries.all()
-    context = {'time_now': time_now, 
-               'all_entries': all_entries, 
-               'user':user,
-               'up_entries': up_entries,
-               'down_entries': down_entries, }
+    if user.is_active:
+        all_entries = Entry.objects.all().extra(order_by = ['-created_date'])
+        up_entries = user.up_entries.all()
+        down_entries = user.down_entries.all()
+        context = {'all_entries': all_entries, 
+                   'user':user,
+                   'up_entries': up_entries,
+                   'down_entries': down_entries,}
     return render(request, 'entries/entries_home.html', context)
 
+# Entries sorted according to user interaction
 def entries_involved(request):
-    time_now = timezone.now()
+    context = {}
     user = request.user
-    all_entries  = list(chain(user.up_entries.all(), user.down_entries.all()))
-    up_entries = user.up_entries.all()
-    down_entries = user.down_entries.all()
-    context = {'time_now': time_now, 
-               'all_entries': all_entries, 
-               'user':user,
-               'up_entries': up_entries,
-               'down_entries': down_entries, }
+    if user.is_active:
+        up_entries = user.up_entries.all()
+        down_entries = user.down_entries.all()
+        all_entries  = list(chain(up_entries, down_entries))
+        context = {'all_entries': all_entries, 
+                   'user':user,
+                   'up_entries': up_entries,
+                   'down_entries': down_entries,}
     return render(request, 'entries/entries_home.html', context)
     
+# Look Entries in detail
 def entry_detail(request, pk):
     entry = get_object_or_404(Entry, pk=pk)
     entry.views += 1
     entry.save()
-    all_entries = Entry.objects.all()
-    all_entries = all_entries.extra(order_by = ['-rate_total'])
-    context = {'entry': entry, 'all_entries': all_entries}
+    all_entries = Entry.objects.all().extra(order_by = ['-rate_total'])
+    context = {'entry': entry, 
+               'all_entries': all_entries,}
     return render(request, 'entries/entry_detail.html', context)
 
+# For voting process
 def entry_vote_up(request, pk):
     user = request.user
     entry = get_object_or_404(Entry, pk=pk)
@@ -150,18 +145,13 @@ def entry_vote_down3(request, pk):
     entry.save()
     return HttpResponse(status=204)
 
-## Login Logout, look again
+# User registration and authentication process
 def register(request):
-
     registered = False
-
     if request.method == 'POST':
-
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm(data=request.POST)
-
         if user_form.is_valid() and profile_form.is_valid():
-
             user = user_form.save()
             user.set_password(user.password)
             user.save()
@@ -169,26 +159,19 @@ def register(request):
             profile.user = user
             profile.save()
             registered = True
-
         else:
             print(user_form.errors, profile_form.errors)
-
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
-
     return render(request,'entries/register.html',
             {'user_form': user_form, 'profile_form': profile_form, 'registered': registered} )
 
-
 def user_login(request):
-
     if request.method == 'POST':
-
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
-
         if user:
             if user.is_active:
                 login(request, user)
@@ -198,16 +181,23 @@ def user_login(request):
         else:
             print("Invalid login details: {0}, {1}".format(username, password))
             return HttpResponse("Invalid login details supplied.")
-
     else:
         return render(request, 'entries/login.html', {})
 
 def user_logout(request):
-
     logout(request)
     return HttpResponseRedirect('/')
 
-## Restricted page example
+# Submit new entry
 @login_required
-def restricted(request):
-    return HttpResponse("Since you're logged in, you can see this text!")
+def new_entry(request):
+    if request.method == 'POST':
+        form  = EntryForm(data=request.POST)
+        if form.is_valid():
+            entry = form.save(commit=False)
+            entry.author = request.user
+            entry.save()
+            return HttpResponseRedirect('/')
+    else:
+        form  = EntryForm()
+    return render(request,'entries/new_entry.html', {'form': form})
