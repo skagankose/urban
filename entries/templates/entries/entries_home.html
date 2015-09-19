@@ -1,0 +1,123 @@
+{% extends "entries/base.html" %}
+{% load staticfiles %}
+
+{% block head %}
+
+   <script src="{% static "js/vote.js" %}"></script>
+   <style>
+   #row_id {
+    /*border-bottom: 1px solid;*/
+    border-top: 1px solid;
+      
+   }
+
+   #div_id_right {
+      border-left: 1px solid;
+    
+      /*border-right: 1px solid;*/
+   }
+
+   #div_id_right:hover {
+      background-color:#9D9D9D;
+      cursor:pointer;
+
+   }
+
+   a {
+      color:#9C9999;
+   }
+   </style>
+
+{% endblock %}
+
+{% block content %}
+
+<p> Welcome <b>{{ user }}!</b> </p>
+
+{% for entry in all_entries %}
+
+<!-- {% if entry in up_entries %}
+   <p> {{ entry.title }} </p>
+{% endif %} -->
+
+<div class="row" id="row_id">
+
+   <div class="col-xs-1" id="div_id_left">
+
+      {% if entry in up_entries %}
+      <p>
+         <a href="{% url "entry_vote_up" pk=entry.pk %}" id="arrow-up-{{ entry.pk }}" class="button_up" hidden='true'><i class="fa fa-arrow-up fa-lg" id="up-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_up2" pk=entry.pk %}" id="arrow-up2-{{ entry.pk }}" class="button_up2" style="color: #3BCE0F"><i class="fa fa-arrow-up fa-lg" id="up2-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_up3" pk=entry.pk %}" id="arrow-up3-{{ entry.pk }}" class="button_up3" hidden='true' style="color: #9C9999"><i class="fa fa-arrow-up fa-lg" id="up3-{{ entry.pk }}"></i></a></p>
+      <p>
+         <span id='rate-{{ entry.pk }}'>{{ entry.rate_total }}</span></p>
+      <p>
+         <a href="{% url "entry_vote_down" pk=entry.pk %}" id="arrow-down-{{ entry.pk }}" class="button_down" hidden='true'> <i class="fa fa-arrow-down fa-lg" id="down-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_down2" pk=entry.pk %}" id="arrow-down2-{{ entry.pk }}" class="button_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-arrow-down fa-lg" id="down2-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_down3" pk=entry.pk %}" id="arrow-down3-{{ entry.pk }}" class="button_down3" style="color: #9C9999"> <i class="fa fa-arrow-down fa-lg" id="down3-{{ entry.pk }}"></i></a></p>
+      
+      {% elif entry in down_entries %}
+      <p>
+         <a href="{% url "entry_vote_up" pk=entry.pk %}" id="arrow-up-{{ entry.pk }}" class="button_up" hidden='true'><i class="fa fa-arrow-up fa-lg" id="up-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_up2" pk=entry.pk %}" id="arrow-up2-{{ entry.pk }}" class="button_up2" hidden='true' style="color: #3BCE0F"><i class="fa fa-arrow-up fa-lg" id="up2-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_up3" pk=entry.pk %}" id="arrow-up3-{{ entry.pk }}" class="button_up3" style="color: #9C9999"><i class="fa fa-arrow-up fa-lg" id="up3-{{ entry.pk }}"></i></a></p>
+      <p>
+         <span id='rate-{{ entry.pk }}'>{{ entry.rate_total }}</span></p>
+      <p>
+         <a href="{% url "entry_vote_down" pk=entry.pk %}" id="arrow-down-{{ entry.pk }}" class="button_down" hidden='true'> <i class="fa fa-arrow-down fa-lg" id="down-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_down2" pk=entry.pk %}" id="arrow-down2-{{ entry.pk }}" class="button_down2" style="color: #CC0000"> <i class="fa fa-arrow-down fa-lg" id="down2-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_down3" pk=entry.pk %}" id="arrow-down3-{{ entry.pk }}" class="button_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-arrow-down fa-lg" id="down3-{{ entry.pk }}"></i></a></p>
+
+      {% else %}
+      <p>
+         <a href="{% url "entry_vote_up" pk=entry.pk %}" id="arrow-up-{{ entry.pk }}" class="button_up" ><i class="fa fa-arrow-up fa-lg" id="up-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_up2" pk=entry.pk %}" id="arrow-up2-{{ entry.pk }}" class="button_up2" hidden='true' style="color: #3BCE0F"><i class="fa fa-arrow-up fa-lg" id="up2-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_up3" pk=entry.pk %}" id="arrow-up3-{{ entry.pk }}" class="button_up3" hidden='true' style="color: #9C9999"><i class="fa fa-arrow-up fa-lg" id="up3-{{ entry.pk }}"></i></a></p>
+      <p>
+         <span id='rate-{{ entry.pk }}'>{{ entry.rate_total }}</span></p>
+      <p>
+         <a href="{% url "entry_vote_down" pk=entry.pk %}" id="arrow-down-{{ entry.pk }}" class="button_down"> <i class="fa fa-arrow-down fa-lg" id="down-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_down2" pk=entry.pk %}" id="arrow-down2-{{ entry.pk }}" class="button_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-arrow-down fa-lg" id="down2-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_down3" pk=entry.pk %}" id="arrow-down3-{{ entry.pk }}" class="button_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-arrow-down fa-lg" id="down3-{{ entry.pk }}"></i></a></p>
+      {% endif %}
+
+   </div>
+
+   <div class="col-xs-11" id="div_id_right" onclick='location.href="{% url "entry_detail" pk=entry.pk %}"';>
+      
+      <h4> {{ entry.title }} - {{ entry.views }} Views </h4>
+      <p> {{ entry.description }} </p>
+      <p> {{ entry.author }} / {{ entry.created_date }} </p>
+
+   </div>
+</div>
+
+{% endfor %}
+
+{% endblock %}
+
+{% block entryList %}
+
+   <div class="list-group">
+
+   {% for entry in all_entries %}
+
+      <a href="{% url "entry_detail" pk=entry.pk %}" class="list-group-item">{{ entry.title }}</a>
+    
+    {% endfor %}
+
+    </div>
+
+{% endblock %}

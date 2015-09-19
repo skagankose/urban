@@ -1,0 +1,22 @@
+{% extends "entries/base.html" %}
+
+{% block content %}
+
+        <h1>{{ entry.title }}</h1>
+        <p>{{ entry.text|linebreaks }}</p>
+
+{% endblock %}
+
+{% block entryList %}
+
+   <div class="list-group">
+
+   {% for entry in all_entries %}
+
+      <a href="{% url "entry_detail" pk=entry.pk %}" class="list-group-item">{{ entry.title }}</a>
+    
+    {% endfor %}
+
+    </div>
+
+{% endblock %}
