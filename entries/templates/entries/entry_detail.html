@@ -1,16 +1,42 @@
 {% extends "entries/base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block head %}
+
+<script src="{% static "js/detail.js" %}"></script>
+
+{% endblock %}
+
 
 {% block content %}
 
-        <h1>{{ entry.title }}</h1>
-        <p>{{ entry.text|linebreaks }}</p><br/>
+  <h1>{{ entry.title }}</h1>
+  <p>{{ entry.text|linebreaks }}</p><br/>
 
-        <p> author is <strong>{{ entry.author }}</strong> </p>
-        <p> currently logged in as <strong>{{ request.user }}</strong> </p>
+  <p> author is <strong>{{ entry.author }}</strong> </p>
+  <p> currently logged in as <strong>{{ request.user }}</strong> </p>
 
-        {% if entry.author == request.user %}
-            <a href="{% url "update_entry" pk=entry.pk %}" > Edit </a>
-        {% endif %}
+  {% if entry.author == request.user %}
+      <a href="{% url "update_entry" pk=entry.pk %}" > Edit </a>
+  {% endif %}
+
+  {% for comment in comments %}
+
+  <div class="well">
+  <strong><p>{{ comment.author }}</strong> | {{ comment.updated_date }} | {{ comment.pk }}</p>
+  <p>{{ comment.text }}</p>
+  </div>
+
+  {% endfor %}
+
+  <button class="btn btn-default" id='show-comment'> Add Comment </button>
+  <div hidden='true' id='comment'>
+  <form id="form" method="post" action="{% url "entry_detail" pk=entry.pk %}">{% csrf_token %}
+    {{ form|crispy }}
+  <input class="btn btn-default" type="submit" name="submit" value="Submit" />
+  </form>
+  </div>
 
 {% endblock %}
 

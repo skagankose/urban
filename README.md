@@ -1,7 +1,7 @@
 To do list
 
-- Add photos&videos to entries
+- Add ability to edit and vote comments, and subcomments
+- Add photos to entries&profiles
+- Add password change mechanism
 - Configure settings to sent email for registration and sign ups
 - Use redux for registration
-- Add ability to write comments to entries
-- Add password change mechanism

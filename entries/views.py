@@ -10,8 +10,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 # Ours
-from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, UpdateUserForm
-from .models import Entry
+from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, UpdateUserForm, CommentForm
+from .models import Entry, Comment
 
 # Entries sorted according to rates
 def entries_home(request):
@@ -72,11 +72,27 @@ def entries_involved(request):
 # Look Entries in detail
 def entry_detail(request, pk):
     entry = get_object_or_404(Entry, pk=pk)
+    comments = Comment.objects.filter(entry=entry)
     entry.views += 1
     entry.save()
     all_entries = Entry.objects.all().extra(order_by = ['-rate_total'])
+
+    if request.method == 'POST':
+        form  = CommentForm(data=request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.entry = entry
+            comment.save()
+            return HttpResponseRedirect('/entry/' + pk)
+    else:
+        form = CommentForm()
+
     context = {'entry': entry, 
-               'all_entries': all_entries,}
+               'all_entries': all_entries,
+               'comments': comments,
+               'form': form,}
+
     return render(request, 'entries/entry_detail.html', context)
 
 # For voting process
@@ -246,16 +262,6 @@ def update_user(request):
         form = UpdateUserForm(instance=request.user)
     return render(request,'entries/update_user.html', {'form': form})
 
-
-# Look Entries in detail
-def entry_detail(request, pk):
-    entry = get_object_or_404(Entry, pk=pk)
-    entry.views += 1
-    entry.save()
-    all_entries = Entry.objects.all().extra(order_by = ['-rate_total'])
-    context = {'entry': entry, 
-               'all_entries': all_entries,}
-    return render(request, 'entries/entry_detail.html', context)
 
     
 

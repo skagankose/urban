@@ -4,8 +4,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 # Ours
-from .models import UserProfile
-from .models import Entry
+from .models import UserProfile, Comment, Entry
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -37,3 +36,8 @@ class UpdateUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', )
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']

@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 class Entry(models.Model):
     author = models.ForeignKey(User)
     title = models.CharField(max_length=100)
-    description = models.TextField(max_length=150)
+    description = models.CharField(max_length=150)
     text = models.TextField()
     rate_up = models.IntegerField(default=1)
     rate_down = models.IntegerField(default=0)
@@ -31,3 +31,27 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+# Comments of entries
+class Comment(models.Model):
+    author = models.ForeignKey(User)
+    entry = models.ForeignKey(Entry)
+    text = models.TextField(max_length=300)
+    updated_date = models.DateTimeField(default=timezone.now)
+    # slug = models.SlugField(unique=True)
+
+    # def save(self, *args, **kwargs):
+    #     self.slug = slugify(self.text)
+    #     super(Comment, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.author.username + '-' +str(self.pk)
+
+# Comments of entries
+class Comment2(models.Model):
+    # author = models.ForeignKey(User)
+    comment = models.ForeignKey(Comment)
+    text = models.TextField(max_length=200)
+    updated_date = models.DateTimeField(default=timezone.now)
+
+
