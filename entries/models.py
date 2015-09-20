@@ -10,8 +10,8 @@ from django.contrib.auth.models import User
 # entry model
 class Entry(models.Model):
     author = models.ForeignKey(User)
-    title = models.CharField(max_length=150)
-    description = models.TextField(max_length=300)
+    title = models.CharField(max_length=100)
+    description = models.TextField(max_length=150)
     text = models.TextField()
     rate_up = models.IntegerField(default=0)
     rate_down = models.IntegerField(default=0)

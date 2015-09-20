@@ -36,8 +36,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    ## Add your application
+    # Our  application
     'entries',
+
+    # Crisp forms
+    'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -106,3 +109,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+
+# Cripsy forms, set default
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

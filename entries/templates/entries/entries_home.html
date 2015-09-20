@@ -32,7 +32,11 @@
 
 {% block content %}
 
-<p> Welcome <b>{{ user }}!</b> </p>
+{% if user.is_authenticated %}
+   <p> Welcome <b>{{ user }}!</b> </p>
+{% else %}
+   <p> You are not logged in! </p>
+{% endif %}
 
 {% for entry in all_entries %}
 
