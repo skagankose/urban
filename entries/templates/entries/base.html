@@ -43,20 +43,16 @@
           <a class="navbar-brand" href="{% url "entries_home" %}"> Home </a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="{% url "entries_popular" %}"> popular </a></li>
-            <li><a href="{% url "entries_new" %}"> new </a></li>
-            <li><a href="{% url "entries_involved" %}"> involved </a></li>
-          </ul>
           <ul class="nav navbar-nav pull-right">
             {% if user.is_authenticated %}
             <li><a href="{% url "logout" %}">Logout</a></li>
-            <li><a href="{% url "update_user" %}">update-profile</a></li>
+            <li><a href="{% url "update_user" %}">Update Profile</a></li>
+            <li><a href="{% url "new_entry" %}">New Entry</a></li>
             {% else %}
-            <li><a href="{% url "register" %}">Register Here</a></li>
+            <li><a href="{% url "register" %}">Register</a></li>
             <li><a href="{% url "login" %}">Login</a></li>
             {% endif %}
-            <li><a href="{% url "new_entry" %}">New Entry</a></li>
+            
           </ul>
         </div><!-- /.nav-collapse -->
       </div><!-- /.container -->
@@ -68,7 +64,7 @@
 
         <div class="col-xs-12 col-sm-8">
           <p class="pull-right visible-xs">
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">MORE</button>
           </p>
 
           {% block content %}

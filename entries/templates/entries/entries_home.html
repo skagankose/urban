@@ -5,22 +5,19 @@
 
    <script src="{% static "js/vote.js" %}"></script>
    <style>
-   #row_id {
-    /*border-bottom: 1px solid;*/
-    border-top: 1px solid;
-      
+
+   #div_id_right {
    }
 
    #div_id_right {
+      border-top: 1px solid;
+      border-right: 1px solid;
       border-left: 1px solid;
-    
-      /*border-right: 1px solid;*/
    }
 
    #div_id_right:hover {
       background-color:#9D9D9D;
       cursor:pointer;
-
    }
 
    a {
@@ -38,11 +35,33 @@
    <p> You are not logged in! </p>
 {% endif %}
 
+<p><a href="{% url "entries_popular" %}" style="color:blue"> Popular </a>|
+<a href="{% url "entries_new" %}" style="color:blue"> New </a>|
+<a href="{% url "entries_involved" %}" style="color:blue"> Involved </a></p> 
+
 {% for entry in all_entries %}
 
 <div class="row" id="row_id">
 
    <div class="col-xs-1" id="div_id_left">
+   {% if entry.author == request.user %}
+
+      <p>
+         <a href="{% url "entry_vote_up" pk=entry.pk %}" id="arrow-up-{{ entry.pk }}" class="button_up" hidden='true'><i class="fa fa-arrow-up fa-lg" id="up-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_up2" pk=entry.pk %}" id="arrow-up2-{{ entry.pk }}" class="button_up2" style="color: #3BCE0F"><i class="fa fa-arrow-up fa-lg" id="up2-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_up3" pk=entry.pk %}" id="arrow-up3-{{ entry.pk }}" class="button_up3" hidden='true' style="color: #9C9999"><i class="fa fa-arrow-up fa-lg" id="up3-{{ entry.pk }}"></i></a></p>
+      <p>
+         <span id='rate-{{ entry.pk }}'>{{ entry.rate_total }}</span></p>
+      <p>
+         <a href="{% url "entry_vote_down" pk=entry.pk %}" id="arrow-down-{{ entry.pk }}" class="button_down" hidden='true'> <i class="fa fa-arrow-down fa-lg" id="down-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_down2" pk=entry.pk %}" id="arrow-down2-{{ entry.pk }}" class="button_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-arrow-down fa-lg" id="down2-{{ entry.pk }}"></i></a>
+
+         <a href="{% url "entry_vote_down3" pk=entry.pk %}" id="arrow-down3-{{ entry.pk }}" class="button_down3" style="color: #9C9999"> <i class="fa fa-arrow-down fa-lg" id="down3-{{ entry.pk }}"></i></a></p>
+
+   {% else %}
 
       {% if entry in up_entries %}
       <p>
@@ -92,6 +111,7 @@
 
          <a href="{% url "entry_vote_down3" pk=entry.pk %}" id="arrow-down3-{{ entry.pk }}" class="button_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-arrow-down fa-lg" id="down3-{{ entry.pk }}"></i></a></p>
       {% endif %}
+   {% endif %}
 
    </div>
 
