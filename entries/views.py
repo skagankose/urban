@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 # Ours
-from .forms import UserForm, UserProfileForm, EntryForm
+from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, UpdateUserForm
 from .models import Entry
 
 # Entries sorted according to rates
@@ -201,3 +201,62 @@ def new_entry(request):
     else:
         form  = EntryForm()
     return render(request,'entries/new_entry.html', {'form': form})
+
+# Update existing entry
+def update_entry(request, pk):
+    entry = get_object_or_404(Entry, pk=pk)
+    if entry.author == request.user:
+        if request.method == 'POST':
+            form = UpdateEntryForm(request.POST, instance=entry)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/')
+        else:
+            form = UpdateEntryForm(instance=entry)
+
+        return render(request,'entries/update_entry.html', {'form': form, 'entry': entry})
+    else:
+        return HttpResponseRedirect('/')
+
+# Update existing entry
+def update_entry(request, pk):
+    entry = get_object_or_404(Entry, pk=pk)
+    if entry.author == request.user:
+        if request.method == 'POST':
+            form = UpdateEntryForm(request.POST, instance=entry)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/')
+        else:
+            form = UpdateEntryForm(instance=entry)
+
+        return render(request,'entries/update_entry.html', {'form': form, 'entry': entry})
+    else:
+        return HttpResponseRedirect('/')
+
+# Update existing entry
+def update_user(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UpdateUserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = UpdateUserForm(instance=request.user)
+    return render(request,'entries/update_user.html', {'form': form})
+
+
+# Look Entries in detail
+def entry_detail(request, pk):
+    entry = get_object_or_404(Entry, pk=pk)
+    entry.views += 1
+    entry.save()
+    all_entries = Entry.objects.all().extra(order_by = ['-rate_total'])
+    context = {'entry': entry, 
+               'all_entries': all_entries,}
+    return render(request, 'entries/entry_detail.html', context)
+
+    
+
+

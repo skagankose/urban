@@ -3,20 +3,27 @@
 {% block content %}
 
         <h1>{{ entry.title }}</h1>
-        <p>{{ entry.text|linebreaks }}</p>
+        <p>{{ entry.text|linebreaks }}</p><br/>
+
+        <p> author is <strong>{{ entry.author }}</strong> </p>
+        <p> currently logged in as <strong>{{ request.user }}</strong> </p>
+
+        {% if entry.author == request.user %}
+            <a href="{% url "update_entry" pk=entry.pk %}" > Edit </a>
+        {% endif %}
 
 {% endblock %}
 
 {% block entryList %}
 
    <div class="list-group">
-
    {% for entry in all_entries %}
 
       <a href="{% url "entry_detail" pk=entry.pk %}" class="list-group-item">{{ entry.title }}</a>
     
     {% endfor %}
-
     </div>
+
+
 
 {% endblock %}

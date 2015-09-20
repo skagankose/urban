@@ -26,6 +26,12 @@ urlpatterns = [
     # Submit new entry
     url(r'^new_entry/', views.new_entry, name='new_entry'),
 
+    # Edit existing entry
+    url(r'^update_entry/(?P<pk>[0-9]+)/$', views.update_entry, name='update_entry'),
+
+    # Edit existing user
+    url(r'^update_user/$', views.update_user, name='update_user'),
+
     # For voting process
     url(r'^entry/(?P<pk>[0-9]+)/vote_up$', views.entry_vote_up, name='entry_vote_up'),
     url(r'^entry/(?P<pk>[0-9]+)/vote_up2$', views.entry_vote_up2, name='entry_vote_up2'),

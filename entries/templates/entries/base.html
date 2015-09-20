@@ -51,6 +51,7 @@
           <ul class="nav navbar-nav pull-right">
             {% if user.is_authenticated %}
             <li><a href="{% url "logout" %}">Logout</a></li>
+            <li><a href="{% url "update_user" %}">update-profile</a></li>
             {% else %}
             <li><a href="{% url "register" %}">Register Here</a></li>
             <li><a href="{% url "login" %}">Login</a></li>

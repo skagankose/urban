@@ -1,0 +1,26 @@
+{% extends "entries/base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block content %}
+
+        <form id="form" method="post" action="{% url "update_user" %}">{% csrf_token %}
+            {{ form|crispy }}
+        <input class="btn btn-default" type="submit" name="submit" value="Submit" />
+        </form>
+
+{% endblock %}
+
+{% block entryList %}
+
+   <div class="list-group">
+
+   {% for entry in all_entries %}
+
+      <a href="{% url "entry_detail" pk=entry.pk %}" class="list-group-item">{{ entry.title }}</a>
+    
+    {% endfor %}
+
+    </div>
+
+{% endblock %}
