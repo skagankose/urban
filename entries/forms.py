@@ -3,8 +3,11 @@ from django import forms
 # Default user model
 from django.contrib.auth.models import User
 
+# Get time now
+from django.utils import timezone
+
 # Ours
-from .models import UserProfile, Comment, Entry
+from .models import UserProfile, Comment, Entry, Subcomment
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -41,3 +44,13 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text']
+
+class EditCommentForm(forms.ModelForm):
+    text = forms.CharField(max_length=300, required=False, widget=forms.Textarea)
+    class Meta:
+        model = Comment
+        fields = ('text',)
+
+
+
+

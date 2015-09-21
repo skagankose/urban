@@ -5,29 +5,154 @@
 {% block head %}
 
 <script src="{% static "js/detail.js" %}"></script>
+<link href="{% static "css/detail.css" %}" rel="stylesheet">
+
 
 {% endblock %}
 
 
 {% block content %}
 
-  <h1>{{ entry.title }}</h1>
+  
+  {% if entry in up_entries %}
+  <h1 id='up_title' style='color:#30BD3D;'> {{ entry.title }}</h1>
+  <h1 id='down_title' style='color:#BB2121;' hidden='true'> {{ entry.title }}</h1>
+  <h1 id='none_title' hidden='true'> {{ entry.title }}</h1>
+  <span id='title-rate-{{ entry.pk }}'>{{ entry.rate_total }}</span>
+
+  <h2>
+    <a href="{% url "entry_vote_up" pk=entry.pk %}" id="thumbs-up-{{ entry.pk }}" class="thumbs_up" hidden='true'><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_up2" pk=entry.pk %}" id="thumbs-up2-{{ entry.pk }}" class="thumbs_up2" style='color:#30BD3D;'><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_up3" pk=entry.pk %}" id="thumbs-up3-{{ entry.pk }}" class="thumbs_up3" hidden='true'><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+
+    <a href="{% url "entry_vote_down" pk=entry.pk %}" id="thumbs-down-{{ entry.pk }}" class="thumbs_down" hidden='true'><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_down2" pk=entry.pk %}" id="thumbs-down2-{{ entry.pk }}" class="thumbs_down2" style='color:#BB2121;' hidden='true'><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_down3" pk=entry.pk %}" id="thumbs-down3-{{ entry.pk }}" class="thumbs_down3"><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+  </h2>
+
+  {% elif entry in down_entries %}
+  <h1 id='up_title' style='color:#30BD3D;' hidden='true'> {{ entry.title }}</h1>
+  <h1 id='down_title' style='color:#BB2121;'> {{ entry.title }}</h1>
+  <h1 id='none_title' hidden='true'> {{ entry.title }}</h1>
+  <span id='title-rate-{{ entry.pk }}'>{{ entry.rate_total }}</span>
+
+  <h2>
+    <a href="{% url "entry_vote_up" pk=entry.pk %}" id="thumbs-up-{{ entry.pk }}" class="thumbs_up" hidden='true'><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_up2" pk=entry.pk %}" id="thumbs-up2-{{ entry.pk }}" class="thumbs_up2" style='color:#30BD3D;' hidden='true'><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_up3" pk=entry.pk %}" id="thumbs-up3-{{ entry.pk }}" class="thumbs_up3"><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+
+    <a href="{% url "entry_vote_down" pk=entry.pk %}" id="thumbs-down-{{ entry.pk }}" class="thumbs_down" hidden='true'><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_down2" pk=entry.pk %}" id="thumbs-down2-{{ entry.pk }}" class="thumbs_down2" style='color:#BB2121;'><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_down3" pk=entry.pk %}" id="thumbs-down3-{{ entry.pk }}" class="thumbs_down3" hidden='true'><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+  </h2>
+
+  {% else %}
+  <h1 id='up_title' style='color:#30BD3D;' hidden='true'> {{ entry.title }}</h1>
+  <h1 id='down_title' style='color:#BB2121;' hidden='true'> {{ entry.title }}</h1>
+  <h1 id='none_title'> {{ entry.title }}</h1>
+  <span id='title-rate-{{ entry.pk }}'>{{ entry.rate_total }}</span>
+
+  <h2>
+    <a href="{% url "entry_vote_up" pk=entry.pk %}" id="thumbs-up-{{ entry.pk }}" class="thumbs_up"><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_up2" pk=entry.pk %}" id="thumbs-up2-{{ entry.pk }}" class="thumbs_up2" style='color:#30BD3D;' hidden='true'><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_up3" pk=entry.pk %}" id="thumbs-up3-{{ entry.pk }}" class="thumbs_up3" hidden='true'><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
+
+    <a href="{% url "entry_vote_down" pk=entry.pk %}" id="thumbs-down-{{ entry.pk }}" class="thumbs_down" ><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_down2" pk=entry.pk %}" id="thumbs-down2-{{ entry.pk }}" class="thumbs_down2" style='color:#BB2121;' hidden='true'><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+    <a href="{% url "entry_vote_down3" pk=entry.pk %}" id="thumbs-down3-{{ entry.pk }}" class="thumbs_down3" hidden='true'><i class="fa fa-thumbs-o-down" id="tdown-{{ entry.pk }}"></i></a>
+  </h2>
+
+  {% endif %}
+
+  <strong><p>{{ entry.author }}</strong>  #{{ entry.pk }}</p>
+  <i><small><p>Created: {{ entry.created_date}} </p>
+  <p>Updated: {{ entry.updated_date }} {% if entry.edited %} | EDITED {% endif %} </p></small></i>
   <p>{{ entry.text|linebreaks }}</p><br/>
 
-  <p> author is <strong>{{ entry.author }}</strong> </p>
   <p> currently logged in as <strong>{{ request.user }}</strong> </p>
 
   {% if entry.author == request.user %}
-      <a href="{% url "update_entry" pk=entry.pk %}" > Edit </a>
+      <a href="{% url "update_entry" pk=entry.pk %}" > Edit Entry </a>
   {% endif %}
 
+
+  <hr>
   {% for comment in comments %}
+  <div class="row">
+    <div class="col-xs-1">
 
-  <div class="well">
-  <strong><p>{{ comment.author }}</strong> | {{ comment.updated_date }} | {{ comment.pk }}</p>
-  <p>{{ comment.text }}</p>
+    {% if comment in up_comments %}
+      <p>
+         <a href="{% url "comment_vote_up" pk=comment.pk %}" id="arrow-up-{{ comment.pk }}" class="button_up" hidden='true'><i class="fa fa-angle-up fa-2x" id="up-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_up2" pk=comment.pk %}" id="arrow-up2-{{ comment.pk }}" class="button_up2" style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_up3" pk=comment.pk %}" id="arrow-up3-{{ comment.pk }}" class="button_up3" hidden='true' style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ comment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-{{ comment.pk }}'>{{ comment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "comment_vote_down" pk=comment.pk %}" id="arrow-down-{{ comment.pk }}" class="button_down" hidden='true'> <i class="fa fa-angle-down fa-2x" id="down-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_down2" pk=comment.pk %}" id="arrow-down2-{{ comment.pk }}" class="button_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_down3" pk=comment.pk %}" id="arrow-down3-{{ comment.pk }}" class="button_down3" style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ comment.pk }}"></i></a></p>
+      
+   {% elif comment in down_comments %}
+      <p>
+         <a href="{% url "comment_vote_up" pk=comment.pk %}" id="arrow-up-{{ comment.pk }}" class="button_up" hidden='true'><i class="fa fa-angle-up fa-2x" id="up-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_up2" pk=comment.pk %}" id="arrow-up2-{{ comment.pk }}" class="button_up2" hidden='true' style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_up3" pk=comment.pk %}" id="arrow-up3-{{ comment.pk }}" class="button_up3" style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ comment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-{{ comment.pk }}'>{{ comment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "comment_vote_down" pk=comment.pk %}" id="arrow-down-{{ comment.pk }}" class="button_down" hidden='true'> <i class="fa fa-angle-down fa-2x" id="down-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_down2" pk=comment.pk %}" id="arrow-down2-{{ comment.pk }}" class="button_down2" style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_down3" pk=comment.pk %}" id="arrow-down3-{{ comment.pk }}" class="button_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ comment.pk }}"></i></a></p>
+
+      {% else %}
+      <p>
+         <a href="{% url "comment_vote_up" pk=comment.pk %}" id="arrow-up-{{ comment.pk }}" class="button_up" ><i class="fa fa-angle-up fa-2x" id="up-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_up2" pk=comment.pk %}" id="arrow-up2-{{ comment.pk }}" class="button_up2" hidden='true' style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_up3" pk=comment.pk %}" id="arrow-up3-{{ comment.pk }}" class="button_up3" hidden='true' style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ comment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-{{ comment.pk }}'>{{ comment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "comment_vote_down" pk=comment.pk %}" id="arrow-down-{{ comment.pk }}" class="button_down"> <i class="fa fa-angle-down fa-2x" id="down-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_down2" pk=comment.pk %}" id="arrow-down2-{{ comment.pk }}" class="button_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ comment.pk }}"></i></a>
+
+         <a href="{% url "comment_vote_down3" pk=comment.pk %}" id="arrow-down3-{{ comment.pk }}" class="button_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ comment.pk }}"></i></a></p>
+   {% endif %}
+
+    </div>
+    <div class="col-xs-11">
+      <strong><p>{{ comment.author }}</strong>  #{{ comment.pk }}</p>
+      <i><small><p> Created: {{ comment.created_date }}</p>
+      <p> Updated: {{ comment.updated_date }} {% if comment.edited %} | EDITED {% endif %} </p></small></i>
+      <p>{{ comment.text }}</p>
+      {% if comment.author == request.user %}
+        <a href="{% url "edit_comment" pk=comment.pk %}" > Edit Comment</a>
+      {% endif %}
+    </div>  
+  </div> <!-- End of Row -->
+  {% for subcomment in comment.subcomments.all %}
+  <hr>
+  <div class="row">
+    <div class="col-xs-10 pull-right">
+      <p><strong>{{ subcomment.author }}</strong></p>
+      <i><small><p>Created: {{ subcomment.created_date }}</p>
+      <p>Updated: {{ subcomment.updated_date }}</p></i></small>
+      <p>{{ subcomment.text }}</p>
+    </div>
   </div>
-
+  {% endfor %}
+  <hr>
   {% endfor %}
 
   <button class="btn btn-default" id='show-comment'> Add Comment </button>
@@ -35,7 +160,8 @@
   <form id="form" method="post" action="{% url "entry_detail" pk=entry.pk %}">{% csrf_token %}
     {{ form|crispy }}
   <input class="btn btn-default" type="submit" name="submit" value="Submit" />
-  </form>
+  </form> <br/>
+  <button class="btn btn-default" id='hide-comment'> Cancel </button>
   </div>
 
 {% endblock %}

@@ -2,9 +2,7 @@
 from django.contrib import admin
 
 # Ours
-from .models import Entry, UserProfile, Comment, Comment2
-
-
+from .models import Entry, UserProfile, Comment, Subcomment
 # Populate slug field
 class CommentAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'slug':('text',)}
@@ -14,4 +12,4 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(UserProfile)
 admin.site.register(Entry)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(Comment2)
+admin.site.register(Subcomment)

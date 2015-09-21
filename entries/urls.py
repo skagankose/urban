@@ -29,14 +29,25 @@ urlpatterns = [
     # Edit existing entry
     url(r'^update_entry/(?P<pk>[0-9]+)/$', views.update_entry, name='update_entry'),
 
+    # Edit existing comment
+    url(r'^edit_comment/(?P<pk>[0-9]+)/$', views.edit_comment, name='edit_comment'),
+
     # Edit existing user
     url(r'^update_user/$', views.update_user, name='update_user'),
 
-    # For voting process
+    # For voting process of entries
     url(r'^entry/(?P<pk>[0-9]+)/vote_up$', views.entry_vote_up, name='entry_vote_up'),
     url(r'^entry/(?P<pk>[0-9]+)/vote_up2$', views.entry_vote_up2, name='entry_vote_up2'),
     url(r'^entry/(?P<pk>[0-9]+)/vote_up3$', views.entry_vote_up3, name='entry_vote_up3'),
     url(r'^entry/(?P<pk>[0-9]+)/vote_down$', views.entry_vote_down, name='entry_vote_down'),
     url(r'^entry/(?P<pk>[0-9]+)/vote_down2$', views.entry_vote_down2, name='entry_vote_down2'),
     url(r'^entry/(?P<pk>[0-9]+)/vote_down3$', views.entry_vote_down3, name='entry_vote_down3'),
+
+    # For voting process of comment
+    url(r'^comment/(?P<pk>[0-9]+)/vote_up$', views.comment_vote_up, name='comment_vote_up'),
+    url(r'^comment/(?P<pk>[0-9]+)/vote_up2$', views.comment_vote_up2, name='comment_vote_up2'),
+    url(r'^comment/(?P<pk>[0-9]+)/vote_up3$', views.comment_vote_up3, name='comment_vote_up3'),
+    url(r'^comment/(?P<pk>[0-9]+)/vote_down$', views.comment_vote_down, name='comment_vote_down'),
+    url(r'^comment/(?P<pk>[0-9]+)/vote_down2$', views.comment_vote_down2, name='comment_vote_down2'),
+    url(r'^comment/(?P<pk>[0-9]+)/vote_down3$', views.comment_vote_down3, name='comment_vote_down3'),
 ]

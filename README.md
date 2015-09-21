@@ -1,6 +1,6 @@
 To do list
 
-- Add ability to edit and vote comments, and subcomments
+- Add ability to add, edit subcomments
 - Add photos to entries&profiles
 - Add password change mechanism
 - Configure settings to sent email for registration and sign ups

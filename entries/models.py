@@ -13,13 +13,15 @@ class Entry(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=150)
     text = models.TextField()
-    rate_up = models.IntegerField(default=1)
-    rate_down = models.IntegerField(default=0)
-    rate_total = models.IntegerField(default=1)
-    views = models.IntegerField(default=0)
-    created_date = models.DateTimeField(default=timezone.now)
     up_voters = models.ManyToManyField(User, related_name='up_entries', blank=True)
     down_voters = models.ManyToManyField(User, related_name='down_entries', blank=True)
+    rate_up = models.IntegerField(default=0)
+    rate_down = models.IntegerField(default=0)
+    rate_total = models.IntegerField(default=0)
+    views = models.IntegerField(default=0)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
+    edited = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -37,7 +39,15 @@ class Comment(models.Model):
     author = models.ForeignKey(User)
     entry = models.ForeignKey(Entry)
     text = models.TextField(max_length=300)
+    up_voters = models.ManyToManyField(User, related_name='up_comments', blank=True)
+    down_voters = models.ManyToManyField(User, related_name='down_comments', blank=True)
+    rate_up = models.IntegerField(default=0)
+    rate_down = models.IntegerField(default=0)
+    rate_total = models.IntegerField(default=0)
+    created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+    edited = models.BooleanField(default=False)
+
     # slug = models.SlugField(unique=True)
 
     # def save(self, *args, **kwargs):
@@ -45,13 +55,16 @@ class Comment(models.Model):
     #     super(Comment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.author.username + '-' +str(self.pk)
+        return str(self.pk) + '-' + self.author.username
 
-# Comments of entries
-class Comment2(models.Model):
-    # author = models.ForeignKey(User)
-    comment = models.ForeignKey(Comment)
+# Subcomments of entries
+class Subcomment(models.Model):
+    author = models.ForeignKey(User)
+    entry = models.ForeignKey(Entry)
+    comment = models.ForeignKey(Comment, related_name='subcomments')
     text = models.TextField(max_length=200)
+    created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
-
+    def __str__(self):
+        return str(self.pk)

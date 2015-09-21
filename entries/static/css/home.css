@@ -1,0 +1,22 @@
+#div_id_right {
+
+}
+
+#div_id_right {
+/*   border-top: 1px solid;
+   border-right: 1px solid;
+   border-left: 1px solid;*/
+}
+
+#div_id_right:hover {   
+   background-color:#9C9999;
+   cursor:pointer;
+}
+
+.button_up {
+  color:#9C9999;
+}
+
+.button_down {
+   color:#9C9999;
+}
