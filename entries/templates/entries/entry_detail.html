@@ -7,13 +7,10 @@
 <script src="{% static "js/detail.js" %}"></script>
 <link href="{% static "css/detail.css" %}" rel="stylesheet">
 
-
 {% endblock %}
-
 
 {% block content %}
 
-  
   {% if entry in up_entries %}
   <h1 id='up_title' style='color:#30BD3D;'> {{ entry.title }}</h1>
   <h1 id='down_title' style='color:#BB2121;' hidden='true'> {{ entry.title }}</h1>
@@ -75,9 +72,17 @@
       <a href="{% url "update_entry" pk=entry.pk %}" > Edit Entry </a>
   {% endif %}
 
+  <button class="btn btn-default" id='show-comment'> Add Comment </button>
+  <div hidden='true' id='comment'>
+  <form id="form" method="post" action="{% url "entry_detail" pk=entry.pk %}">{% csrf_token %}
+    {{ form|crispy }}
+  <input class="btn btn-default" type="submit" name="submit" value="Submit" />
+  </form> <br/>
+  <button class="btn btn-default" id='hide-comment'> Cancel </button>
+  </div>
 
-  <hr>
   {% for comment in comments %}
+  <hr>
   <div class="row">
     <div class="col-xs-1">
 
@@ -141,28 +146,169 @@
       {% endif %}
     </div>  
   </div> <!-- End of Row -->
+
+  <div class='row'>
+    <div class='col-xs-11 pull-right'>
+    <button class="btn btn-default show_subcomment" id='show-subcomment-{{ comment.pk }}'> Add Subcomment </button>
+    <div hidden='true' id='subcomment-{{ comment.pk }}' class='subcomments'>
+    <form id="sub_form" method="post" action="{% url "new_subcomment" pk=entry.pk pks=comment.pk %}">{% csrf_token %}
+      {{ subcomment_form|crispy }}
+    <input class="btn btn-default" type="submit" name="submit" value="Submit" /> </form> <br/>
+    <button class="btn btn-default hide-subcomment" id='hide-subcomment-{{ comment.pk }}'> Cancel </button>
+    </div>
+    </div>
+  </div><!-- End of Row -->
+
   {% for subcomment in comment.subcomments.all %}
   <hr>
   <div class="row">
     <div class="col-xs-10 pull-right">
-      <p><strong>{{ subcomment.author }}</strong></p>
+      <p><strong>{{ subcomment.author }}</strong> #{{ subcomment.pk }}</p>
       <i><small><p>Created: {{ subcomment.created_date }}</p>
-      <p>Updated: {{ subcomment.updated_date }}</p></i></small>
+      <p>Updated: {{ subcomment.updated_date }} {% if subcomment.edited %} | EDITED {% endif %} </p></small></i>
       <p>{{ subcomment.text }}</p>
+      {% if subcomment.author == request.user %}
+        <a href="{% url "edit_subcomment" pk=subcomment.pk %}" > Edit Subcomment </a>
+      {% endif %}
     </div>
-  </div>
-  {% endfor %}
-  <hr>
-  {% endfor %}
 
-  <button class="btn btn-default" id='show-comment'> Add Comment </button>
-  <div hidden='true' id='comment'>
-  <form id="form" method="post" action="{% url "entry_detail" pk=entry.pk %}">{% csrf_token %}
-    {{ form|crispy }}
-  <input class="btn btn-default" type="submit" name="submit" value="Submit" />
-  </form> <br/>
-  <button class="btn btn-default" id='hide-comment'> Cancel </button>
-  </div>
+    <div class="col-xs-1 pull-right">
+
+    {% if subcomment in up_subcomments %}
+      <p>
+         <a href="{% url "subcomment_vote_up" pk=subcomment.pk %}" id="subarrow-up-{{ subcomment.pk }}" class="subutton_up" hidden='true'><i class="fa fa-angle-up fa-2x" id="up-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_up2" pk=subcomment.pk %}" id="subarrow-up2-{{ subcomment.pk }}" class="subutton_up2" style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_up3" pk=subcomment.pk %}" id="subarrow-up3-{{ subcomment.pk }}" class="subutton_up3" hidden='true' style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ subcomment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-subcomment-{{ subcomment.pk }}'>{{ subcomment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "subcomment_vote_down" pk=subcomment.pk %}" id="subarrow-down-{{ subcomment.pk }}" class="subutton_down" hidden='true'> <i class="fa fa-angle-down fa-2x" id="down-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_down2" pk=subcomment.pk %}" id="subarrow-down2-{{ subcomment.pk }}" class="subutton_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_down3" pk=subcomment.pk %}" id="subarrow-down3-{{ subcomment.pk }}" class="subutton_down3" style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ subcomment.pk }}"></i></a></p>
+      
+   {% elif subcomment in down_subcomments %}
+      <p>
+         <a href="{% url "subcomment_vote_up" pk=subcomment.pk %}" id="subarrow-up-{{ subcomment.pk }}" class="subutton_up" hidden='true'><i class="fa fa-angle-up fa-2x" id="up-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_up2" pk=subcomment.pk %}" id="subarrow-up2-{{ subcomment.pk }}" class="subutton_up2" hidden='true' style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_up3" pk=subcomment.pk %}" id="subarrow-up3-{{ subcomment.pk }}" class="subutton_up3" style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ subcomment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-subcomment-{{ subcomment.pk }}'>{{ subcomment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "subcomment_vote_down" pk=subcomment.pk %}" id="subarrow-down-{{ subcomment.pk }}" class="subutton_down" hidden='true'> <i class="fa fa-angle-down fa-2x" id="down-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_down2" pk=subcomment.pk %}" id="subarrow-down2-{{ subcomment.pk }}" class="subutton_down2" style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_down3" pk=subcomment.pk %}" id="subarrow-down3-{{ subcomment.pk }}" class="subutton_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ subcomment.pk }}"></i></a></p>
+
+      {% else %}
+      <p>
+         <a href="{% url "subcomment_vote_up" pk=subcomment.pk %}" id="subarrow-up-{{ subcomment.pk }}" class="subutton_up" ><i class="fa fa-angle-up fa-2x" id="up-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_up2" pk=subcomment.pk %}" id="subarrow-up2-{{ subcomment.pk }}" class="subutton_up2" hidden='true' style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_up3" pk=subcomment.pk %}" id="subarrow-up3-{{ subcomment.pk }}" class="subutton_up3" hidden='true' style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ subcomment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-subcomment-{{ subcomment.pk }}'>{{ subcomment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "subcomment_vote_down" pk=subcomment.pk %}" id="subarrow-down-{{ subcomment.pk }}" class="subutton_down"> <i class="fa fa-angle-down fa-2x" id="down-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_down2" pk=subcomment.pk %}" id="subarrow-down2-{{ subcomment.pk }}" class="subutton_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ subcomment.pk }}"></i></a>
+
+         <a href="{% url "subcomment_vote_down3" pk=subcomment.pk %}" id="subarrow-down3-{{ subcomment.pk }}" class="subutton_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ subcomment.pk }}"></i></a></p>
+   {% endif %}
+
+    </div>
+  </div> <!-- End of Row -->
+
+  <div class='row'>
+    <div class='col-xs-10 pull-right'>
+    <button class="btn btn-default show_twosubcomment" id='show-twosubcomment-{{ subcomment.pk }}'> Add Twosubcomment </button>
+    <div hidden='true' id='twosubcomment-{{ subcomment.pk }}' class='twosubcomments'>
+    <form id="twosub_form" method="post" action="{% url "new_twosubcomment" pk=entry.pk pks=comment.pk pkss=subcomment.pk %}">{% csrf_token %}
+      {{ twosubcomment_form|crispy }}
+    <input class="btn btn-default" type="submit" name="submit" value="Submit" /> </form> <br/>
+    <button class="btn btn-default hide-twosubcomment" id='hide-twosubcomment-{{ subcomment.pk }}'> Cancel </button>
+    </div>
+    </div>
+  </div><!-- End of Row -->
+
+  {% for twosubcomment in subcomment.twosubcomments.all  %}
+  <hr>
+  <div class="row">
+    <div class="col-xs-9 pull-right">
+      <p><strong>{{ twosubcomment.author }}</strong> #{{ twosubcomment.pk }}</p>
+      <i><small><p>Created: {{ twosubcomment.created_date }}</p>
+      <p>Updated: {{ twosubcomment.updated_date }} {% if twosubcomment.edited %} | EDITED {% endif %} </p></small></i>
+      <p>{{ twosubcomment.text }}</p>
+      {% if twosubcomment.author == request.user %}
+        <a href="{% url "edit_twosubcomment" pk=twosubcomment.pk %}" > Edit Twoubcomment </a>
+      {% endif %}
+    </div>
+    <div class="col-xs-1 pull-right">
+
+    {% if twosubcomment in up_twosubcomments %}
+      <p>
+         <a href="{% url "twosubcomment_vote_up" pk=twosubcomment.pk %}" id="twosubarrow-up-{{ twosubcomment.pk }}" class="twosubutton_up" hidden='true'><i class="fa fa-angle-up fa-2x" id="up-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_up2" pk=twosubcomment.pk %}" id="twosubarrow-up2-{{ twosubcomment.pk }}" class="twosubutton_up2" style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_up3" pk=twosubcomment.pk %}" id="twosubarrow-up3-{{ twosubcomment.pk }}" class="twosubutton_up3" hidden='true' style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ twosubcomment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-twosubcomment-{{ twosubcomment.pk }}'>{{ twosubcomment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "twosubcomment_vote_down" pk=twosubcomment.pk %}" id="twosubarrow-down-{{ twosubcomment.pk }}" class="twosubutton_down" hidden='true'> <i class="fa fa-angle-down fa-2x" id="down-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_down2" pk=twosubcomment.pk %}" id="twosubarrow-down2-{{ twosubcomment.pk }}" class="twosubutton_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_down3" pk=twosubcomment.pk %}" id="twosubarrow-down3-{{ twosubcomment.pk }}" class="twosubutton_down3" style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ twosubcomment.pk }}"></i></a></p>
+      
+   {% elif twosubcomment in down_twosubcomments %}
+      <p>
+         <a href="{% url "twosubcomment_vote_up" pk=twosubcomment.pk %}" id="twosubarrow-up-{{ twosubcomment.pk }}" class="twosubutton_up" hidden='true'><i class="fa fa-angle-up fa-2x" id="up-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_up2" pk=twosubcomment.pk %}" id="twosubarrow-up2-{{ twosubcomment.pk }}" class="twosubutton_up2" hidden='true' style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_up3" pk=twosubcomment.pk %}" id="twosubarrow-up3-{{ twosubcomment.pk }}" class="twosubutton_up3" style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ twosubcomment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-twosubcomment-{{ twosubcomment.pk }}'>{{ twosubcomment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "twosubcomment_vote_down" pk=twosubcomment.pk %}" id="twosubarrow-down-{{ twosubcomment.pk }}" class="twosubutton_down" hidden='true'> <i class="fa fa-angle-down fa-2x" id="down-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_down2" pk=twosubcomment.pk %}" id="twosubarrow-down2-{{ twosubcomment.pk }}" class="twosubutton_down2" style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_down3" pk=twosubcomment.pk %}" id="twosubarrow-down3-{{ twosubcomment.pk }}" class="twosubutton_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ twosubcomment.pk }}"></i></a></p>
+
+      {% else %}
+      <p>
+         <a href="{% url "twosubcomment_vote_up" pk=twosubcomment.pk %}" id="twosubarrow-up-{{ twosubcomment.pk }}" class="twosubutton_up" ><i class="fa fa-angle-up fa-2x" id="up-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_up2" pk=twosubcomment.pk %}" id="twosubarrow-up2-{{ twosubcomment.pk }}" class="twosubutton_up2" hidden='true' style="color: #3BCE0F"><i class="fa fa-angle-up fa-2x" id="up2-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_up3" pk=twosubcomment.pk %}" id="twosubarrow-up3-{{ twosubcomment.pk }}" class="twosubutton_up3" hidden='true' style="color: #9C9999"><i class="fa fa-angle-double-up fa-2x" id="up3-{{ twosubcomment.pk }}"></i></a></p>
+      <p>
+         <span id='rate-twosubcomment-{{ twosubcomment.pk }}'>{{ twosubcomment.rate_total }}</span></p>
+      <p>
+         <a href="{% url "twosubcomment_vote_down" pk=twosubcomment.pk %}" id="twosubarrow-down-{{ twosubcomment.pk }}" class="twosubutton_down"> <i class="fa fa-angle-down fa-2x" id="down-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_down2" pk=twosubcomment.pk %}" id="twosubarrow-down2-{{ twosubcomment.pk }}" class="twosubutton_down2" hidden='true' style="color: #CC0000"> <i class="fa fa-angle-down fa-2x" id="down2-{{ twosubcomment.pk }}"></i></a>
+
+         <a href="{% url "twosubcomment_vote_down3" pk=twosubcomment.pk %}" id="twosubarrow-down3-{{ twosubcomment.pk }}" class="twosubutton_down3" hidden='true' style="color: #9C9999"> <i class="fa fa-angle-double-down fa-2x" id="down3-{{ twosubcomment.pk }}"></i></a></p>
+   {% endif %}
+
+    </div>
+  </div> <!-- End of Row -->
+
+  {% endfor %} <!-- End of TWOSUBCOMMENTS -->
+
+  {% endfor %} <!-- End of SUBCOMMENTS -->
+
+  {% endfor %} <!-- End of COMMENTS -->
 
 {% endblock %}
 

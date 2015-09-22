@@ -13,8 +13,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 # Ours
-from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, UpdateUserForm, CommentForm, EditCommentForm
-from .models import Entry, Comment
+from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, UpdateUserForm, CommentForm, EditCommentForm, SubcommentForm, EditSubcommentForm, TwosubcommentForm, EditTwosubcommentForm
+from .models import Entry, Comment, Subcomment, Twosubcomment
 
 # Entries sorted according to rates
 def entries_home(request):
@@ -76,10 +76,7 @@ def entries_involved(request):
 def entry_detail(request, pk):
     user = request.user
     entry = get_object_or_404(Entry, pk=pk)
-    comments = Comment.objects.filter(entry=entry).extra(order_by = ['-rate_total'])
-    
-    # for comment in comments:
-        
+    comments = Comment.objects.filter(entry=entry).extra(order_by = ['-rate_total'])        
     entry.views += 1
     entry.save()
     all_entries = Entry.objects.all().extra(order_by = ['-rate_total'])
@@ -87,6 +84,12 @@ def entry_detail(request, pk):
     down_comments = user.down_comments.all()
     up_entries = user.up_entries.all()
     down_entries = user.down_entries.all()
+    up_subcomments = user.up_subcomments.all()
+    down_subcomments = user.down_subcomments.all()
+    up_twosubcomments = user.up_twosubcomments.all()
+    down_twosubcomments = user.down_twosubcomments.all()
+    subcomment_form = SubcommentForm()
+    twosubcomment_form = TwosubcommentForm()
 
     if request.method == 'POST':
         form  = CommentForm(data=request.POST)
@@ -110,9 +113,59 @@ def entry_detail(request, pk):
                'up_comments': up_comments,
                'down_comments': down_comments,
                'up_entries': up_entries,
-               'down_entries': down_entries,}
+               'down_entries': down_entries,
+               'subcomment_form': subcomment_form,
+               'up_subcomments': up_subcomments,
+               'down_subcomments': down_subcomments,
+               'up_twosubcomments': up_twosubcomments,
+               'down_twosubcomments': down_twosubcomments,
+               'twosubcomment_form': twosubcomment_form,}
 
     return render(request, 'entries/entry_detail.html', context)
+
+def new_subcomment(request, pk, pks):
+    comment = get_object_or_404(Comment, pk=pks)
+    entry = get_object_or_404(Entry, pk=pk)
+    user = request.user
+
+    if request.method == 'POST':
+        form  = SubcommentForm(data=request.POST)
+        if form.is_valid():
+            subcomment = form.save(commit=False)
+            subcomment.author = user
+            subcomment.comment = comment
+            subcomment.entry = entry
+            subcomment.rate_up = 1
+            subcomment.rate_total = 1
+            subcomment.save()
+            subcomment.up_voters.add(user)
+            subcomment.save()
+            return HttpResponseRedirect('/entry/' + pk)
+    else:
+        return HttpResponseRedirect('/entry/' + pk)
+
+def new_twosubcomment(request, pk, pks, pkss):
+    subcomment = get_object_or_404(Subcomment, pk=pkss)
+    comment = get_object_or_404(Comment, pk=pks)
+    entry = get_object_or_404(Entry, pk=pk)
+    user = request.user
+
+    if request.method == 'POST':
+        form  = TwosubcommentForm(data=request.POST)
+        if form.is_valid():
+            twosubcomment = form.save(commit=False)
+            twosubcomment.author = user
+            twosubcomment.subcomment = subcomment
+            twosubcomment.comment = comment
+            twosubcomment.entry = entry
+            twosubcomment.rate_up = 1
+            twosubcomment.rate_total = 1
+            twosubcomment.save()
+            twosubcomment.up_voters.add(user)
+            twosubcomment.save()
+            return HttpResponseRedirect('/entry/' + pk)
+    else:
+        return HttpResponseRedirect('/entry/' + pk)
 
 # User registration and authentication process
 def register(request):
@@ -225,6 +278,48 @@ def edit_comment(request, pk):
             form = EditCommentForm(instance=comment)
 
         return render(request,'entries/edit_comment.html', {'form': form, 'comment': comment})
+    else:
+        return HttpResponseRedirect('/')
+
+# Update existing Subcomment
+def edit_subcomment(request, pk):
+    subcomment = get_object_or_404(Subcomment, pk=pk)
+    entry = subcomment.entry
+    entry_pk = entry.pk
+    if subcomment.author == request.user:
+        if request.method == 'POST':
+            form = EditSubcommentForm(request.POST, instance=subcomment)
+            if form.is_valid():
+                edited_subcomment = form.save(commit=False)
+                edited_subcomment.edited = True
+                edited_subcomment.updated_date = timezone.now()
+                edited_subcomment.save()
+                return HttpResponseRedirect('/entry/' + str(entry_pk))
+        else:
+            form = EditSubcommentForm(instance=subcomment)
+
+        return render(request,'entries/edit_subcomment.html', {'form': form, 'subcomment': subcomment})
+    else:
+        return HttpResponseRedirect('/')
+
+# Update existing Twosubcomment
+def edit_twosubcomment(request, pk):
+    twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
+    entry = twosubcomment.entry
+    entry_pk = entry.pk
+    if twosubcomment.author == request.user:
+        if request.method == 'POST':
+            form = EditTwosubcommentForm(request.POST, instance=twosubcomment)
+            if form.is_valid():
+                edited_twosubcomment = form.save(commit=False)
+                edited_twosubcomment.edited = True
+                edited_twosubcomment.updated_date = timezone.now()
+                edited_twosubcomment.save()
+                return HttpResponseRedirect('/entry/' + str(entry_pk))
+        else:
+            form = EditTwosubcommentForm(instance=twosubcomment)
+
+        return render(request,'entries/edit_twosubcomment.html', {'form': form, 'twosubcomment': twosubcomment})
     else:
         return HttpResponseRedirect('/')
 
@@ -358,4 +453,136 @@ def comment_vote_down3(request, pk):
     user.down_comments.add(comment)
     user.save()
     comment.save()
+    return HttpResponse(status=204)
+
+# For voting process of SUBCOMMENTS
+def subcomment_vote_up(request, pk):
+    user = request.user
+    subcomment = get_object_or_404(Subcomment, pk=pk)
+    subcomment.rate_up += 1
+    subcomment.rate_total = subcomment.rate_up + subcomment.rate_down
+    user.down_subcomments.remove(subcomment)
+    user.up_subcomments.add(subcomment)
+    subcomment.save()
+    user.save()
+    return HttpResponse(status=204)
+
+def subcomment_vote_up2(request, pk):
+    user = request.user
+    subcomment = get_object_or_404(Subcomment, pk=pk)
+    subcomment.rate_up -= 1
+    subcomment.rate_total = subcomment.rate_up + subcomment.rate_down
+    user.up_subcomments.remove(subcomment)
+    subcomment.save()
+    user.save()
+    return HttpResponse(status=204)
+
+def subcomment_vote_up3(request, pk):
+    user = request.user
+    subcomment = get_object_or_404(Subcomment, pk=pk)
+    subcomment.rate_up += 2
+    subcomment.rate_total = subcomment.rate_up + subcomment.rate_down
+    user.down_subcomments.remove(subcomment)
+    user.up_subcomments.add(subcomment)
+    user.save()
+    subcomment.save()
+    return HttpResponse(status=204)
+
+def subcomment_vote_down(request, pk):
+    user = request.user
+    subcomment = get_object_or_404(Subcomment, pk=pk)
+    subcomment.rate_down -= 1
+    subcomment.rate_total = subcomment.rate_up + subcomment.rate_down
+    user.up_subcomments.remove(subcomment)
+    user.down_subcomments.add(subcomment)
+    user.save()
+    subcomment.save()
+    return HttpResponse(status=204)
+
+def subcomment_vote_down2(request, pk):
+    user = request.user
+    subcomment = get_object_or_404(Subcomment, pk=pk)
+    subcomment.rate_down += 1
+    subcomment.rate_total = subcomment.rate_up + subcomment.rate_down
+    user.up_subcomments.remove(subcomment)
+    user.down_subcomments.remove(subcomment)
+    user.save()
+    subcomment.save()
+    return HttpResponse(status=204)
+
+def subcomment_vote_down3(request, pk):
+    user = request.user
+    subcomment = get_object_or_404(Subcomment, pk=pk)
+    subcomment.rate_up -= 2
+    subcomment.rate_total = subcomment.rate_up + subcomment.rate_down
+    user.up_subcomments.remove(subcomment)
+    user.down_subcomments.add(subcomment)
+    user.save()
+    subcomment.save()
+    return HttpResponse(status=204)
+
+#For voting process of TWOSUBCOMMENTS
+def twosubcomment_vote_up(request, pk):
+    user = request.user
+    twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
+    twosubcomment.rate_up += 1
+    twosubcomment.rate_total = twosubcomment.rate_up + twosubcomment.rate_down
+    user.down_twosubcomments.remove(twosubcomment)
+    user.up_twosubcomments.add(twosubcomment)
+    twosubcomment.save()
+    user.save()
+    return HttpResponse(status=204)
+
+def twosubcomment_vote_up2(request, pk):
+    user = request.user
+    twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
+    twosubcomment.rate_up -= 1
+    twosubcomment.rate_total = twosubcomment.rate_up + twosubcomment.rate_down
+    user.up_twosubcomments.remove(twosubcomment)
+    twosubcomment.save()
+    user.save()
+    return HttpResponse(status=204)
+
+def twosubcomment_vote_up3(request, pk):
+    user = request.user
+    twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
+    twosubcomment.rate_up += 2
+    twosubcomment.rate_total = twosubcomment.rate_up + twosubcomment.rate_down
+    user.down_twosubcomments.remove(twosubcomment)
+    user.up_twosubcomments.add(twosubcomment)
+    user.save()
+    twosubcomment.save()
+    return HttpResponse(status=204)
+
+def twosubcomment_vote_down(request, pk):
+    user = request.user
+    twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
+    twosubcomment.rate_down -= 1
+    twosubcomment.rate_total = twosubcomment.rate_up + twosubcomment.rate_down
+    user.up_twosubcomments.remove(twosubcomment)
+    user.down_twosubcomments.add(twosubcomment)
+    user.save()
+    twosubcomment.save()
+    return HttpResponse(status=204)
+
+def twosubcomment_vote_down2(request, pk):
+    user = request.user
+    twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
+    twosubcomment.rate_down += 1
+    twosubcomment.rate_total = twosubcomment.rate_up + twosubcomment.rate_down
+    user.up_twosubcomments.remove(twosubcomment)
+    user.down_twosubcomments.remove(twosubcomment)
+    user.save()
+    twosubcomment.save()
+    return HttpResponse(status=204)
+
+def twosubcomment_vote_down3(request, pk):
+    user = request.user
+    twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
+    twosubcomment.rate_up -= 2
+    twosubcomment.rate_total = twosubcomment.rate_up + twosubcomment.rate_down
+    user.up_twosubcomments.remove(twosubcomment)
+    user.down_twosubcomments.add(twosubcomment)
+    user.save()
+    twosubcomment.save()
     return HttpResponse(status=204)

@@ -1,18 +1,58 @@
 $(document).ready(function() {
 
     $('#show-comment').on('click', function() {
-
         $(this).hide();
         $('#comment').show();
-
     })
 
     $('#hide-comment').on('click', function() {
-
         $('#comment').hide();
         $('#show-comment').show();
+    })
+
+    //
+
+    $('.show_subcomment').on('click', function() {
+
+        $('.twosubcomments').hide()
+        $('.show_twosubcomment').show()
+        $('.subcomments').hide()
+        $('.show_subcomment').show()
+        var commentID = this.id.split("-")[2];
+        $('#subcomment-' + commentID).show();
+        $(this).hide();
+    })
+
+    $('.hide-subcomment').on('click', function() {
+
+        var commentID = this.id.split("-")[2];
+        $('#subcomment-' + commentID).hide();
+        $('#show-subcomment-' + commentID).show();
 
     })
+
+    //
+
+    $('.show_twosubcomment').on('click', function() {
+
+        $('.twosubcomments').hide()
+        $('.show_twosubcomment').show()
+        $('.subcomments').hide()
+        $('.show_subcomment').show()
+        var subcommentID = this.id.split("-")[2];
+        $('#twosubcomment-' + subcommentID).show();
+        $(this).hide();
+    })
+
+    $('.hide-twosubcomment').on('click', function() {
+
+        var subcommentID = this.id.split("-")[2];
+        $('#twosubcomment-' + subcommentID).hide();
+        $('#show-twosubcomment-' + subcommentID).show();
+
+    })
+
+// FOR COMMNETS
 
 $('.button_up').on('click', function() {
 
@@ -92,6 +132,168 @@ $('.button_down3').on('click', function() {
     var content = document.getElementById("rate-" + commentID).textContent;
     var vote = parseInt(content) - 2;
     document.getElementById("rate-" + commentID).textContent = vote })
+
+// FOR SUBCOMMNETS
+
+$('.subutton_up').on('click', function() {
+
+    var subcommentID = this.id.split("-")[2];
+    $('#subarrow-up-' + subcommentID).hide();
+    $('#subarrow-up2-' + subcommentID).show();
+    $('#subarrow-up3-' + subcommentID).hide();
+    $('#subarrow-down-' + subcommentID).hide();
+    $('#subarrow-down2-' + subcommentID).hide();
+    $('#subarrow-down3-' + subcommentID).show();
+    var content = document.getElementById("rate-subcomment-" + subcommentID).textContent;
+    var vote = parseInt(content) + 1;
+    document.getElementById("rate-subcomment-" + subcommentID).textContent = vote })
+
+
+$('.subutton_up2').on('click', function() {
+
+    var subcommentID = this.id.split("-")[2];
+    $('#subarrow-up-' + subcommentID).show();
+    $('#subarrow-up2-' + subcommentID).hide();
+    $('#subarrow-up3-' + subcommentID).hide();
+    $('#subarrow-down-' + subcommentID).show();
+    $('#subarrow-down2-' + subcommentID).hide();
+    $('#subarrow-down3-' + subcommentID).hide();
+    var content = document.getElementById("rate-subcomment-" + subcommentID).textContent;
+    var vote = parseInt(content) - 1;
+    document.getElementById("rate-subcomment-" + subcommentID).textContent = vote })
+
+$('.subutton_up3').on('click', function() {
+
+    var subcommentID = this.id.split("-")[2];
+    $('#subarrow-up-' + subcommentID).hide();
+    $('#subarrow-up2-' + subcommentID).show();
+    $('#subarrow-up3-' + subcommentID).hide();
+    $('#subarrow-down-' + subcommentID).hide();
+    $('#subarrow-down2-' + subcommentID).hide();
+    $('#subarrow-down3-' + subcommentID).show();
+    var content = document.getElementById("rate-subcomment-" + subcommentID).textContent;
+    var vote = parseInt(content) + 2;
+    document.getElementById("rate-subcomment-" + subcommentID).textContent = vote })
+
+$('.subutton_down').on('click', function() {
+
+    var subcommentID = this.id.split("-")[2];
+    $('#subarrow-up-' + subcommentID).hide();
+    $('#subarrow-up2-' + subcommentID).hide();
+    $('#subarrow-up3-' + subcommentID).show();
+    $('#subarrow-down-' + subcommentID).hide();
+    $('#subarrow-down2-' + subcommentID).show();
+    $('#subarrow-down3-' + subcommentID).hide();
+    var content = document.getElementById("rate-subcomment-" + subcommentID).textContent;
+    var vote = parseInt(content) - 1;
+    document.getElementById("rate-subcomment-" + subcommentID).textContent = vote })
+
+$('.subutton_down2').on('click', function() {
+
+    var subcommentID = this.id.split("-")[2];
+    $('#subarrow-up-' + subcommentID).show();
+    $('#subarrow-up2-' + subcommentID).hide();
+    $('#subarrow-up3-' + subcommentID).hide();
+    $('#subarrow-down-' + subcommentID).show();
+    $('#subarrow-down2-' + subcommentID).hide();
+    $('#subarrow-down3-' + subcommentID).hide();
+    var content = document.getElementById("rate-subcomment-" + subcommentID).textContent;
+    var vote = parseInt(content) + 1;
+    document.getElementById("rate-subcomment-" + subcommentID).textContent = vote })
+
+$('.subutton_down3').on('click', function() {
+
+    var subcommentID = this.id.split("-")[2];
+    $('#subarrow-up-' + subcommentID).hide();
+    $('#subarrow-up2-' + subcommentID).hide();
+    $('#subarrow-up3-' + subcommentID).show();
+    $('#subarrow-down-' + subcommentID).hide();
+    $('#subarrow-down2-' + subcommentID).show();
+    $('#subarrow-down3-' + subcommentID).hide();
+    var content = document.getElementById("rate-subcomment-" + subcommentID).textContent;
+    var vote = parseInt(content) - 2;
+    document.getElementById("rate-subcomment-" + subcommentID).textContent = vote })
+
+// FOR TWOSUBCOMMNETS
+
+$('.twosubutton_up').on('click', function() {
+
+    var twosubcommentID = this.id.split("-")[2];
+    $('#twosubarrow-up-' + twosubcommentID).hide();
+    $('#twosubarrow-up2-' + twosubcommentID).show();
+    $('#twosubarrow-up3-' + twosubcommentID).hide();
+    $('#twosubarrow-down-' + twosubcommentID).hide();
+    $('#twosubarrow-down2-' + twosubcommentID).hide();
+    $('#twosubarrow-down3-' + twosubcommentID).show();
+    var content = document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent;
+    var vote = parseInt(content) + 1;
+    document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent = vote })
+
+
+$('.twosubutton_up2').on('click', function() {
+
+    var twosubcommentID = this.id.split("-")[2];
+    $('#twosubarrow-up-' + twosubcommentID).show();
+    $('#twosubarrow-up2-' + twosubcommentID).hide();
+    $('#twosubarrow-up3-' + twosubcommentID).hide();
+    $('#twosubarrow-down-' + twosubcommentID).show();
+    $('#twosubarrow-down2-' + twosubcommentID).hide();
+    $('#twosubarrow-down3-' + twosubcommentID).hide();
+    var content = document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent;
+    var vote = parseInt(content) - 1;
+    document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent = vote })
+
+$('.twosubutton_up3').on('click', function() {
+
+    var twosubcommentID = this.id.split("-")[2];
+    $('#twosubarrow-up-' + twosubcommentID).hide();
+    $('#twosubarrow-up2-' + twosubcommentID).show();
+    $('#twosubarrow-up3-' + twosubcommentID).hide();
+    $('#twosubarrow-down-' + twosubcommentID).hide();
+    $('#twosubarrow-down2-' + twosubcommentID).hide();
+    $('#twosubarrow-down3-' + twosubcommentID).show();
+    var content = document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent;
+    var vote = parseInt(content) + 2;
+    document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent = vote })
+
+$('.twosubutton_down').on('click', function() {
+
+    var twosubcommentID = this.id.split("-")[2];
+    $('#twosubarrow-up-' + twosubcommentID).hide();
+    $('#twosubarrow-up2-' + twosubcommentID).hide();
+    $('#twosubarrow-up3-' + twosubcommentID).show();
+    $('#twosubarrow-down-' + twosubcommentID).hide();
+    $('#twosubarrow-down2-' + twosubcommentID).show();
+    $('#twosubarrow-down3-' + twosubcommentID).hide();
+    var content = document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent;
+    var vote = parseInt(content) - 1;
+    document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent = vote })
+
+$('.twosubutton_down2').on('click', function() {
+
+    var twosubcommentID = this.id.split("-")[2];
+    $('#twosubarrow-up-' + twosubcommentID).show();
+    $('#twosubarrow-up2-' + twosubcommentID).hide();
+    $('#twosubarrow-up3-' + twosubcommentID).hide();
+    $('#twosubarrow-down-' + twosubcommentID).show();
+    $('#twosubarrow-down2-' + twosubcommentID).hide();
+    $('#twosubarrow-down3-' + twosubcommentID).hide();
+    var content = document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent;
+    var vote = parseInt(content) + 1;
+    document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent = vote })
+
+$('.twosubutton_down3').on('click', function() {
+
+    var twosubcommentID = this.id.split("-")[2];
+    $('#twosubarrow-up-' + twosubcommentID).hide();
+    $('#twosubarrow-up2-' + twosubcommentID).hide();
+    $('#twosubarrow-up3-' + twosubcommentID).show();
+    $('#twosubarrow-down-' + twosubcommentID).hide();
+    $('#twosubarrow-down2-' + twosubcommentID).show();
+    $('#twosubarrow-down3-' + twosubcommentID).hide();
+    var content = document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent;
+    var vote = parseInt(content) - 2;
+    document.getElementById("rate-twosubcomment-" + twosubcommentID).textContent = vote })
 
 // FOR TITLE THUMBS UP AND DOWN
 

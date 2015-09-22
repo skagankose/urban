@@ -57,14 +57,47 @@ class Comment(models.Model):
     def __str__(self):
         return str(self.pk) + '-' + self.author.username
 
-# Subcomments of entries
+# Subcomments of Comments
 class Subcomment(models.Model):
     author = models.ForeignKey(User)
     entry = models.ForeignKey(Entry)
     comment = models.ForeignKey(Comment, related_name='subcomments')
     text = models.TextField(max_length=200)
+    up_voters = models.ManyToManyField(User, related_name='up_subcomments', blank=True)
+    down_voters = models.ManyToManyField(User, related_name='down_subcomments', blank=True)
+    rate_up = models.IntegerField(default=0)
+    rate_down = models.IntegerField(default=0)
+    rate_total = models.IntegerField(default=0)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+    edited = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-rate_total']
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.pk) + '-' + self.author.username
+
+# Twosubcomments of Subcomments
+class Twosubcomment(models.Model):
+    author = models.ForeignKey(User)
+    entry = models.ForeignKey(Entry)
+    comment = models.ForeignKey(Comment)
+    subcomment = models.ForeignKey(Subcomment, related_name='twosubcomments')
+    text = models.TextField(max_length=200)
+    up_voters = models.ManyToManyField(User, related_name='up_twosubcomments', blank=True)
+    down_voters = models.ManyToManyField(User, related_name='down_twosubcomments', blank=True)
+    rate_up = models.IntegerField(default=0)
+    rate_down = models.IntegerField(default=0)
+    rate_total = models.IntegerField(default=0)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
+    edited = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-rate_total']
+
+    def __str__(self):
+        return str(self.pk) + '-' + self.author.username
+
+

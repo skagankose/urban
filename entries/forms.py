@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 # Ours
-from .models import UserProfile, Comment, Entry, Subcomment
+from .models import UserProfile, Comment, Entry, Subcomment,Twosubcomment
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -43,12 +43,36 @@ class UpdateUserForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['text']
+        fields = ('text',)
 
 class EditCommentForm(forms.ModelForm):
     text = forms.CharField(max_length=300, required=False, widget=forms.Textarea)
     class Meta:
         model = Comment
+        fields = ('text',)
+
+class SubcommentForm(forms.ModelForm):
+    text = forms.CharField(widget=forms.Textarea(attrs={'rows': 5,}))
+    class Meta:
+        model = Subcomment
+        fields = ('text',)
+
+class EditSubcommentForm(forms.ModelForm):
+    text = forms.CharField(max_length=300, required=False, widget=forms.Textarea)
+    class Meta:
+        model = Subcomment
+        fields = ('text',)
+
+class TwosubcommentForm(forms.ModelForm):
+    text = forms.CharField(widget=forms.Textarea(attrs={'rows': 5,}))
+    class Meta:
+        model = Twosubcomment
+        fields = ('text',)
+
+class EditTwosubcommentForm(forms.ModelForm):
+    text = forms.CharField(max_length=300, required=False, widget=forms.Textarea)
+    class Meta:
+        model = Twosubcomment
         fields = ('text',)
 
 
