@@ -28,7 +28,7 @@ class Entry(models.Model):
         try:
             this = Entry.objects.get(pk=self.pk)
             if this.thumbnail != self.thumbnail and this.thumbnail != 'img/thumbnail.png':
-                this.thumbnail.delete(save=False)
+                    this.thumbnail.delete(save=False)
         except: pass       
         super(Entry, self).save(*args, **kwargs)
 

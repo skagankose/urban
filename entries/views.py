@@ -297,10 +297,12 @@ def update_entry(request, pk):
                 edited_entry = form.save(commit=False)
                 edited_entry.edited = True
                 edited_entry.updated_date = timezone.now()
-                edited_entry.thumbnail = request.FILES.get('thumbnail', None)
-                if edited_entry.thumbnail == None:
-                    edited_entry.thumbnail = 'img/thumbnail.png'
                 edited_entry.save()
+                edited_entry.thumbnail = request.FILES.get('thumbnail', None)
+                if edited_entry.thumbnail != None:
+                    edited_entry.save()
+                    # edited_entry.thumbnail = 'img/thumbnail.png'
+                
                 return HttpResponseRedirect('/entry/' + str(entry.pk))
         else:
             form = UpdateEntryForm(instance=entry)
@@ -319,11 +321,10 @@ def update_user(request):
         profile_form = UpdateUserProfileForm(request.POST, request.FILES, instance=user_profile)
         if user_form.is_valid and profile_form.is_valid():
             user_form.save()
-            profile = profile_form.save(commit=False)
+            profile = profile_form.save()
             profile.avatar = request.FILES.get('avatar', None)
-            if profile.avatar == None:
-                profile.avatar = 'img/avatar.png'
-            profile.save()
+            if profile.avatar != None:
+                profile.save()
             return HttpResponseRedirect('/')
     else:
         user_form = UpdateUserForm(instance=user)
