@@ -1,5 +1,5 @@
 # Core
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 
 # Combine query sets
@@ -17,18 +17,33 @@ from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, Update
 from .models import Entry, Comment, Subcomment, Twosubcomment, UserProfile
 from django.contrib.auth.models import User
 
+# Pagginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 # Entries sorted according to rates
 def entries_home(request):
     context = {}
     user = request.user
     if user.is_active:
-        all_entries = Entry.objects.all().extra(order_by = ['-rate_total'])
+        all_entries_initial = Entry.objects.all().extra(order_by = ['-rate_total'])
+        right_all_entries = all_entries_initial
+
+        paginator = Paginator(all_entries_initial, 7) 
+        page = request.GET.get('page')
+        try:
+            all_entries = paginator.page(page)
+        except PageNotAnInteger:
+            all_entries = paginator.page(1)
+        except EmptyPage:
+            all_entries = paginator.page(paginator.num_pages)  
+
         up_entries = user.up_entries.all()
         down_entries = user.down_entries.all()
         context = {'all_entries': all_entries, 
                    'user':user,
                    'up_entries': up_entries,
-                   'down_entries': down_entries,}
+                   'down_entries': down_entries,
+                   'right_all_entries': right_all_entries,}
     return render(request, 'entries/entries_home.html', context)
 
 # Entries sorted according to views
@@ -36,13 +51,25 @@ def entries_popular(request):
     context = {}
     user = request.user
     if user.is_active:
-        all_entries = Entry.objects.all().extra(order_by = ['-views'])
+        all_entries_initial = Entry.objects.all().extra(order_by = ['-views'])
+        right_all_entries = all_entries_initial
+
+        paginator = Paginator(all_entries_initial, 7) 
+        page = request.GET.get('page')
+        try:
+            all_entries = paginator.page(page)
+        except PageNotAnInteger:
+            all_entries = paginator.page(1)
+        except EmptyPage:
+            all_entries = paginator.page(paginator.num_pages)
+
         up_entries = user.up_entries.all()
         down_entries = user.down_entries.all()
         context = {'all_entries': all_entries, 
                    'user':user,
                    'up_entries': up_entries,
-                   'down_entries': down_entries,}
+                   'down_entries': down_entries,
+                   'right_all_entries': right_all_entries,}
     return render(request, 'entries/entries_home.html', context)
 
 # Entries sorted according to created date
@@ -50,13 +77,25 @@ def entries_new(request):
     context = {}
     user = request.user
     if user.is_active:
-        all_entries = Entry.objects.all().extra(order_by = ['-created_date'])
+        all_entries_initial = Entry.objects.all().extra(order_by = ['-created_date'])
+        right_all_entries = all_entries_initial
+
+        paginator = Paginator(all_entries_initial, 7) 
+        page = request.GET.get('page')
+        try:
+            all_entries = paginator.page(page)
+        except PageNotAnInteger:
+            all_entries = paginator.page(1)
+        except EmptyPage:
+            all_entries = paginator.page(paginator.num_pages)
+
         up_entries = user.up_entries.all()
         down_entries = user.down_entries.all()
         context = {'all_entries': all_entries, 
                    'user':user,
                    'up_entries': up_entries,
-                   'down_entries': down_entries,}
+                   'down_entries': down_entries,
+                   'right_all_entries': right_all_entries,}
     return render(request, 'entries/entries_home.html', context)
 
 # Entries sorted according to user interaction
@@ -66,11 +105,23 @@ def entries_involved(request):
     if user.is_active:
         up_entries = user.up_entries.all()
         down_entries = user.down_entries.all()
-        all_entries  = list(chain(up_entries, down_entries))
+        all_entries_initial  = list(chain(up_entries, down_entries))
+        right_all_entries = all_entries_initial
+
+        paginator = Paginator(all_entries_initial, 7) 
+        page = request.GET.get('page')
+        try:
+            all_entries = paginator.page(page)
+        except PageNotAnInteger:
+            all_entries = paginator.page(1)
+        except EmptyPage:
+            all_entries = paginator.page(paginator.num_pages)
+
         context = {'all_entries': all_entries, 
                    'user':user,
                    'up_entries': up_entries,
-                   'down_entries': down_entries,}
+                   'down_entries': down_entries,
+                   'right_all_entries': right_all_entries,}
     return render(request, 'entries/entries_home.html', context)
     
 # Look Entries in detail
@@ -181,6 +232,8 @@ def register(request):
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.avatar = request.FILES.get('avatar', None)
+            if profile.avatar == None:
+                profile.avatar = 'img/avatar.png'
             profile.save()
             registered = True
         else:
@@ -224,6 +277,8 @@ def new_entry(request):
             entry.rate_up = 1
             entry.rate_total = 1
             entry.thumbnail = request.FILES.get('thumbnail', None)
+            if entry.thumbnail == None:
+               entry.thumbnail = 'img/thumbnail.png'
             entry.save()
             entry.up_voters.add(user)
             entry.save()
@@ -243,6 +298,8 @@ def update_entry(request, pk):
                 edited_entry.edited = True
                 edited_entry.updated_date = timezone.now()
                 edited_entry.thumbnail = request.FILES.get('thumbnail', None)
+                if edited_entry.thumbnail == None:
+                    edited_entry.thumbnail = 'img/thumbnail.png'
                 edited_entry.save()
                 return HttpResponseRedirect('/entry/' + str(entry.pk))
         else:
@@ -264,6 +321,8 @@ def update_user(request):
             user_form.save()
             profile = profile_form.save(commit=False)
             profile.avatar = request.FILES.get('avatar', None)
+            if profile.avatar == None:
+                profile.avatar = 'img/avatar.png'
             profile.save()
             return HttpResponseRedirect('/')
     else:
@@ -316,6 +375,30 @@ def edit_subcomment(request, pk):
     else:
         return HttpResponseRedirect('/')
 
+# Delete Entry
+def delete_entry(request, pk):
+    entry = get_object_or_404(Entry, pk=pk)
+    entry.delete()
+    return HttpResponseRedirect('/')
+
+# Delete Comment
+def delete_comment(request, pk, pks):
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.delete()
+    return HttpResponseRedirect('/entry/' + pks)
+
+# Delete Subcomment
+def delete_subcomment(request, pk, pks):
+    subcomment = get_object_or_404(Subcomment, pk=pk)
+    subcomment.delete()
+    return HttpResponseRedirect('/entry/' + pks)
+
+# Delete Twosubcomment
+def delete_twosubcomment(request, pk, pks):
+    twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
+    twosubcomment.delete()
+    return HttpResponseRedirect('/entry/' + pks)
+
 # Update existing Twosubcomment
 def edit_twosubcomment(request, pk):
     twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
@@ -336,6 +419,18 @@ def edit_twosubcomment(request, pk):
         return render(request,'entries/edit_twosubcomment.html', {'form': form, 'twosubcomment': twosubcomment})
     else:
         return HttpResponseRedirect('/')
+
+# AJAX search
+def entry_search(request):
+    if request.method == 'POST':
+        text_search = request.POST['text_search']
+        if text_search == '':
+            text_search = '✗'
+            print(text_search)
+    else:
+        text_search = None
+    founded_entries = Entry.objects.filter(title__icontains=text_search)
+    return render(request, 'entries/ajax_search.html', {'founded_entries': founded_entries,})
 
 # For voting process of ENTRIES
 def entry_vote_up(request, pk):

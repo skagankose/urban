@@ -1,0 +1,13 @@
+{% if founded_entries.count > 0 %}
+
+{% for founded_entry in founded_entries %}
+
+    <li class="list-group-item"><a href='{% url "entry_detail" pk=founded_entry.pk %}'> {{ founded_entry.title }} </a></li>
+
+{% endfor %}
+
+{% else %}
+
+<li> None to Show. </li>
+
+{% endif %}

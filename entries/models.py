@@ -27,24 +27,27 @@ class Entry(models.Model):
     def save(self, *args, **kwargs):
         try:
             this = Entry.objects.get(pk=self.pk)
-            if this.thumbnail != self.thumbnail:
+            if this.thumbnail != self.thumbnail and this.thumbnail != 'img/thumbnail.png':
                 this.thumbnail.delete(save=False)
         except: pass       
         super(Entry, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-rate_total']
 
     def __str__(self):
         return self.title
 
 # Add new fields to default user model
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='user_profile')
     website = models.URLField(blank=True)
     avatar = models.ImageField(upload_to = 'img/', blank=True)
 
     def save(self, *args, **kwargs):
         try:
             this = UserProfile.objects.get(pk=self.pk)
-            if this.avatar != self.avatar:
+            if this.avatar != self.avatar and this.avatar != 'img/avatar.png':
                 this.avatar.delete(save=False)
         except: pass 
         super(UserProfile, self).save(*args, **kwargs)

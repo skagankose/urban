@@ -4,6 +4,7 @@
 {% block head %}
 
    <script src="{% static "js/vote.js" %}"></script>
+   <script src="{% static "js/ajax-search.js" %}"></script>
    <link href="{% static "css/home.css" %}" rel="stylesheet">
 
 {% endblock %}
@@ -91,9 +92,26 @@
       {% endif %}
    </div>
 
-</div>
+</div> <!-- End of Row -->
 <hr>
 {% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if all_entries.has_previous %}
+            <a href="?page={{ all_entries.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ all_entries.number }} of {{ all_entries.paginator.num_pages }}.
+        </span>
+
+        {% if all_entries.has_next %}
+            <a href="?page={{ all_entries.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
 
 {% endblock %}
 
@@ -101,12 +119,30 @@
 
    <div class="list-group">
 
-   {% for entry in all_entries %}
+   {% for entry in right_all_entries %}
 
       <a href="{% url "entry_detail" pk=entry.pk %}" class="list-group-item">{{ entry.title }}</a>
     
     {% endfor %}
 
     </div>
+
+    {% if user.is_authenticated %}
+    <!-- AJAX example -->
+
+   <h3> Search </h3>
+
+   {% csrf_token %}
+   <input type='text' id='csrftoken' name='csrftoken' value="{{ csrf_token }}" hidden='true'/>
+   <input type='text' id='search' name='search'/>
+
+   <br><br>
+   <ul id='search_results' class="list-group">
+
+   </ul>
+   <!-- END AJAX example -->
+   {% endif %}
+
+    
 
 {% endblock %}

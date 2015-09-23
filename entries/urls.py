@@ -16,6 +16,18 @@ urlpatterns = [
 
     # Look Entries in detail
     url(r'^entry/(?P<pk>[0-9]+)/$', views.entry_detail, name='entry_detail'),
+
+    # Delete Entry
+    url(r'^delete_entry/(?P<pk>[0-9]+)/$', views.delete_entry, name='delete_entry'),
+
+    # Delete Comment
+    url(r'^delete_comment/(?P<pk>[0-9]+)/(?P<pks>[0-9]+)/$', views.delete_comment, name='delete_comment'),
+
+    # Delete Subcomment
+    url(r'^delete_subcomment/(?P<pk>[0-9]+)/(?P<pks>[0-9]+)/$', views.delete_subcomment, name='delete_subcomment'),
+
+    # Delete Twosubcomment
+    url(r'^delete_twosubcomment/(?P<pk>[0-9]+)/(?P<pks>[0-9]+)/$', views.delete_twosubcomment, name='delete_twosubcomment'),
     
     # User registration and authentication process
     url(r'^register/$', views.register, name='register'),
@@ -45,6 +57,9 @@ urlpatterns = [
 
     # Edit existing user
     url(r'^update_user/$', views.update_user, name='update_user'),
+
+    # AJAX example
+    url(r'^entry_search/$', views.entry_search, name='entry_search'),
 
     # For voting process of entries
     url(r'^entry/(?P<pk>[0-9]+)/vote_up$', views.entry_vote_up, name='entry_vote_up'),

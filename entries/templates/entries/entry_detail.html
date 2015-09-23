@@ -11,6 +11,11 @@
 
 {% block content %}
 
+
+      {% if entry.thumbnail %}
+      <p><img src='/static/{{entry.thumbnail}}' class='img-responsive'/></p>
+      {% endif %}
+
   {% if entry in up_entries %}
   <h1 id='up_title' style='color:#30BD3D;'> {{ entry.title }}</h1>
   <h1 id='down_title' style='color:#BB2121;' hidden='true'> {{ entry.title }}</h1>
@@ -69,9 +74,10 @@
   <p> currently logged in as <strong>{{ request.user }}</strong> </p>
 
   {% if entry.author == request.user %}
-      <a href="{% url "update_entry" pk=entry.pk %}" > Edit Entry </a>
+      <a href="{% url "update_entry" pk=entry.pk %}" > Edit Entry </a> ||
+      <a href="{% url "delete_entry" pk=entry.pk %}"> Delete Entry </a>
   {% endif %}
-
+  <br/>
   <button class="btn btn-default" id='show-comment'> Add Comment </button>
   <div hidden='true' id='comment'>
   <form id="form" method="post" action="{% url "entry_detail" pk=entry.pk %}">{% csrf_token %}
@@ -136,13 +142,19 @@
    {% endif %}
 
     </div>
-    <div class="col-xs-11">
+    <div class="col-xs-2">
+
+     <img src='/static/{{ comment.author.user_profile.avatar }}' class='img-responsive'/>
+     
+    </div>
+    <div class="col-xs-9">
       <strong><p>{{ comment.author }}</strong>  #{{ comment.pk }}</p>
       <i><small><p> Created: {{ comment.created_date }}</p>
       <p> Updated: {{ comment.updated_date }} {% if comment.edited %} | EDITED {% endif %} </p></small></i>
       <p>{{ comment.text }}</p>
       {% if comment.author == request.user %}
-        <a href="{% url "edit_comment" pk=comment.pk %}" > Edit Comment</a>
+        <a href="{% url "edit_comment" pk=comment.pk %}" > Edit Comment</a> ||
+        <a href="{% url "delete_comment" pk=comment.pk pks=entry.pk %}" > Delete Comment</a>
       {% endif %}
     </div>  
   </div> <!-- End of Row -->
@@ -162,16 +174,21 @@
   {% for subcomment in comment.subcomments.all %}
   <hr>
   <div class="row">
-    <div class="col-xs-10 pull-right">
+    <div class="col-xs-8 pull-right">
       <p><strong>{{ subcomment.author }}</strong> #{{ subcomment.pk }}</p>
       <i><small><p>Created: {{ subcomment.created_date }}</p>
       <p>Updated: {{ subcomment.updated_date }} {% if subcomment.edited %} | EDITED {% endif %} </p></small></i>
       <p>{{ subcomment.text }}</p>
       {% if subcomment.author == request.user %}
-        <a href="{% url "edit_subcomment" pk=subcomment.pk %}" > Edit Subcomment </a>
+        <a href="{% url "edit_subcomment" pk=subcomment.pk %}" > Edit Subcomment </a> ||
+        <a href="{% url "delete_subcomment" pk=subcomment.pk pks=entry.pk %}" > Delete Subcomment </a>
       {% endif %}
     </div>
+    <div class="col-xs-2 pull-right">
 
+     <img src='/static/{{ subcomment.author.user_profile.avatar }}' class='img-responsive'/>
+     
+    </div>
     <div class="col-xs-1 pull-right">
 
     {% if subcomment in up_subcomments %}
@@ -241,14 +258,20 @@
   {% for twosubcomment in subcomment.twosubcomments.all  %}
   <hr>
   <div class="row">
-    <div class="col-xs-9 pull-right">
+    <div class="col-xs-7 pull-right">
       <p><strong>{{ twosubcomment.author }}</strong> #{{ twosubcomment.pk }}</p>
       <i><small><p>Created: {{ twosubcomment.created_date }}</p>
       <p>Updated: {{ twosubcomment.updated_date }} {% if twosubcomment.edited %} | EDITED {% endif %} </p></small></i>
       <p>{{ twosubcomment.text }}</p>
       {% if twosubcomment.author == request.user %}
-        <a href="{% url "edit_twosubcomment" pk=twosubcomment.pk %}" > Edit Twoubcomment </a>
+        <a href="{% url "edit_twosubcomment" pk=twosubcomment.pk %}" > Edit Twoubcomment </a> ||
+        <a href="{% url "delete_twosubcomment" pk=twosubcomment.pk pks=entry.pk %}" > Delete Twosubcomment</a>
       {% endif %}
+    </div>
+    <div class="col-xs-2 pull-right">
+
+     <img src='/static/{{ twosubcomment.author.user_profile.avatar }}' class='img-responsive'/>
+     
     </div>
     <div class="col-xs-1 pull-right">
 
