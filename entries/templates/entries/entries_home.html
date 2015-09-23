@@ -128,19 +128,17 @@
     </div>
 
     {% if user.is_authenticated %}
-    <!-- AJAX example -->
-
+    <!-- AJAX search -->
    <h3> Search </h3>
-
+   
    {% csrf_token %}
    <input type='text' id='csrftoken' name='csrftoken' value="{{ csrf_token }}" hidden='true'/>
    <input type='text' id='search' name='search'/>
-
+   
    <br><br>
    <ul id='search_results' class="list-group">
-
    </ul>
-   <!-- END AJAX example -->
+   <!-- END AJAX search -->
    {% endif %}
 
     

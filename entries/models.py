@@ -1,13 +1,13 @@
-# core
+# Core
 from django.db import models
 
-# Get time now
+# Get time
 from django.utils import timezone
 
 # Default user model
 from django.contrib.auth.models import User
 
-# entry model
+# Entry model
 class Entry(models.Model):
     author = models.ForeignKey(User)
     title = models.CharField(max_length=100)
@@ -38,7 +38,7 @@ class Entry(models.Model):
     def __str__(self):
         return self.title
 
-# Add new fields to default user model
+# Extend default user model
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='user_profile')
     website = models.URLField(blank=True)
@@ -54,8 +54,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
 
 # Comments of entries
 class Comment(models.Model):
@@ -80,7 +78,7 @@ class Comment(models.Model):
     def __str__(self):
         return str(self.pk) + '-' + self.author.username
 
-# Subcomments of Comments
+# Subcomments of comments
 class Subcomment(models.Model):
     author = models.ForeignKey(User)
     entry = models.ForeignKey(Entry)
@@ -101,7 +99,7 @@ class Subcomment(models.Model):
     def __str__(self):
         return str(self.pk) + '-' + self.author.username
 
-# Twosubcomments of Subcomments
+# Twosubcomments of subcomments
 class Twosubcomment(models.Model):
     author = models.ForeignKey(User)
     entry = models.ForeignKey(Entry)
@@ -122,5 +120,4 @@ class Twosubcomment(models.Model):
 
     def __str__(self):
         return str(self.pk) + '-' + self.author.username
-
-
+        

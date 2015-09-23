@@ -1,9 +1,10 @@
 # Default admin mdel
 from django.contrib import admin
 
-# Ours
+# Ours'
 from .models import Entry, UserProfile, Comment, Subcomment, Twosubcomment
-# Populate slug field
+
+# Populate slug field (example)
 class CommentAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'slug':('text',)}
     pass

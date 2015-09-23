@@ -9,10 +9,10 @@ from itertools import chain
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-# Get time now
+# Get time
 from django.utils import timezone
 
-# Ours
+# Ours'
 from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, UpdateUserForm, CommentForm, EditCommentForm, SubcommentForm, EditSubcommentForm, TwosubcommentForm, EditTwosubcommentForm, UpdateUserProfileForm
 from .models import Entry, Comment, Subcomment, Twosubcomment, UserProfile
 from django.contrib.auth.models import User
@@ -72,7 +72,7 @@ def entries_popular(request):
                    'right_all_entries': right_all_entries,}
     return render(request, 'entries/entries_home.html', context)
 
-# Entries sorted according to created date
+# Entries sorted according to created_date
 def entries_new(request):
     context = {}
     user = request.user
@@ -175,6 +175,7 @@ def entry_detail(request, pk):
 
     return render(request, 'entries/entry_detail.html', context)
 
+# Create new subcomment
 def new_subcomment(request, pk, pks):
     comment = get_object_or_404(Comment, pk=pks)
     entry = get_object_or_404(Entry, pk=pk)
@@ -196,6 +197,7 @@ def new_subcomment(request, pk, pks):
     else:
         return HttpResponseRedirect('/entry/' + pk)
 
+# Create new twosubcomment
 def new_twosubcomment(request, pk, pks, pkss):
     subcomment = get_object_or_404(Subcomment, pk=pkss)
     comment = get_object_or_404(Comment, pk=pks)
@@ -263,10 +265,10 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/') # END OF User registration and authentication process 
 
 # Submit new entry
-@login_required
+# @login_required
 def new_entry(request):
     user = request.user
     if request.method == 'POST':
@@ -330,9 +332,9 @@ def update_user(request):
         user_form = UpdateUserForm(instance=user)
         profile_form = UpdateUserProfileForm(instance=user_profile)
     return render(request,'entries/update_user.html', {
-                                                       'user_form': user_form, 
-                                                       'profile_form': profile_form,
-                                                       'user_profile': user_profile,})
+                   'user_form': user_form, 
+                   'profile_form': profile_form,
+                   'user_profile': user_profile,})
 
 # Update existing comment
 def edit_comment(request, pk):
@@ -433,7 +435,7 @@ def entry_search(request):
     founded_entries = Entry.objects.filter(title__icontains=text_search)
     return render(request, 'entries/ajax_search.html', {'founded_entries': founded_entries,})
 
-# For voting process of ENTRIES
+# Voting process of entries
 def entry_vote_up(request, pk):
     user = request.user
     entry = get_object_or_404(Entry, pk=pk)
@@ -497,9 +499,9 @@ def entry_vote_down3(request, pk):
     user.down_entries.add(entry)
     user.save()
     entry.save()
-    return HttpResponse(status=204)
+    return HttpResponse(status=204) # END OF voting process of entries
 
-# For voting process of COMMENTS
+# Voting process of comments
 def comment_vote_up(request, pk):
     user = request.user
     comment = get_object_or_404(Comment, pk=pk)
@@ -563,9 +565,9 @@ def comment_vote_down3(request, pk):
     user.down_comments.add(comment)
     user.save()
     comment.save()
-    return HttpResponse(status=204)
+    return HttpResponse(status=204) # END OF voting process of comments
 
-# For voting process of SUBCOMMENTS
+# Voting process of subcomments
 def subcomment_vote_up(request, pk):
     user = request.user
     subcomment = get_object_or_404(Subcomment, pk=pk)
@@ -629,9 +631,9 @@ def subcomment_vote_down3(request, pk):
     user.down_subcomments.add(subcomment)
     user.save()
     subcomment.save()
-    return HttpResponse(status=204)
+    return HttpResponse(status=204) # END OF voting process of subcomments
 
-#For voting process of TWOSUBCOMMENTS
+#Voting process of twosubcomments
 def twosubcomment_vote_up(request, pk):
     user = request.user
     twosubcomment = get_object_or_404(Twosubcomment, pk=pk)
@@ -695,4 +697,4 @@ def twosubcomment_vote_down3(request, pk):
     user.down_twosubcomments.add(twosubcomment)
     user.save()
     twosubcomment.save()
-    return HttpResponse(status=204)
+    return HttpResponse(status=204) # END OF voting process of twosubcomments

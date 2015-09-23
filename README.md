@@ -11,7 +11,9 @@ WARNINGS!
 
 WHAT s LEFT!
 
+    - Add categories to entries
     - Add profile page
+    - Add multiple file upload(?)
     - Add password change mechanism
     - Configure settings to sent email for registration and sign ups
     - Use redux for registration

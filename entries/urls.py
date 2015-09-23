@@ -1,32 +1,30 @@
 # Core
 from django.conf.urls import include, url
 
-# Ours
+# Ours'
 from . import views
 
 urlpatterns = [
 
-    # Entries sorted according to rates
+    # Entries sorted according to...
     url(r'^$', views.entries_home, name='entries_home'),
-
-    # Entries sorted accordingly
     url(r'^popular/$', views.entries_popular, name='entries_popular'),
     url(r'^new/$', views.entries_new, name='entries_new'),
     url(r'^involved/$', views.entries_involved, name='entries_involved'),
 
-    # Look Entries in detail
+    # Look entries in detail
     url(r'^entry/(?P<pk>[0-9]+)/$', views.entry_detail, name='entry_detail'),
 
-    # Delete Entry
+    # Delete entry
     url(r'^delete_entry/(?P<pk>[0-9]+)/$', views.delete_entry, name='delete_entry'),
 
-    # Delete Comment
+    # Delete comment
     url(r'^delete_comment/(?P<pk>[0-9]+)/(?P<pks>[0-9]+)/$', views.delete_comment, name='delete_comment'),
 
-    # Delete Subcomment
+    # Delete subcomment
     url(r'^delete_subcomment/(?P<pk>[0-9]+)/(?P<pks>[0-9]+)/$', views.delete_subcomment, name='delete_subcomment'),
 
-    # Delete Twosubcomment
+    # Delete twosubcomment
     url(r'^delete_twosubcomment/(?P<pk>[0-9]+)/(?P<pks>[0-9]+)/$', views.delete_twosubcomment, name='delete_twosubcomment'),
     
     # User registration and authentication process
@@ -58,7 +56,7 @@ urlpatterns = [
     # Edit existing user
     url(r'^update_user/$', views.update_user, name='update_user'),
 
-    # AJAX example
+    # AJAX search
     url(r'^entry_search/$', views.entry_search, name='entry_search'),
 
     # For voting process of entries
@@ -69,7 +67,7 @@ urlpatterns = [
     url(r'^entry/(?P<pk>[0-9]+)/vote_down2$', views.entry_vote_down2, name='entry_vote_down2'),
     url(r'^entry/(?P<pk>[0-9]+)/vote_down3$', views.entry_vote_down3, name='entry_vote_down3'),
 
-    # For voting process of comment
+    # For voting process of comments
     url(r'^comment/(?P<pk>[0-9]+)/vote_up$', views.comment_vote_up, name='comment_vote_up'),
     url(r'^comment/(?P<pk>[0-9]+)/vote_up2$', views.comment_vote_up2, name='comment_vote_up2'),
     url(r'^comment/(?P<pk>[0-9]+)/vote_up3$', views.comment_vote_up3, name='comment_vote_up3'),
