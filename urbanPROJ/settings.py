@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+# /Users/k/Desktop/urban
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -113,3 +114,7 @@ LOGIN_REDIRECT_URL = '/'
 
 # Cripsy forms, set default
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'entries/static/')
+MEDIA_URL = ''
+

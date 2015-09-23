@@ -8,7 +8,7 @@
 
         <a href="/">Return to the homepage.</a><br />
         {% else %}
-        <form id="form" method="post" action="/new_entry/">{% csrf_token %}
+        <form id="form" method="post" action="/new_entry/" enctype="multipart/form-data">{% csrf_token %}
             {{ form|crispy }}
         <input class="btn btn-default" type="submit" name="submit" value="Submit" />
         </form>

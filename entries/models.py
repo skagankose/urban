@@ -22,6 +22,15 @@ class Entry(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
     edited = models.BooleanField(default=False)
+    thumbnail = models.ImageField(upload_to = 'img/', blank=True)
+
+    def save(self, *args, **kwargs):
+        try:
+            this = Entry.objects.get(pk=self.pk)
+            if this.thumbnail != self.thumbnail:
+                this.thumbnail.delete(save=False)
+        except: pass       
+        super(Entry, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -30,9 +39,20 @@ class Entry(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     website = models.URLField(blank=True)
+    avatar = models.ImageField(upload_to = 'img/', blank=True)
+
+    def save(self, *args, **kwargs):
+        try:
+            this = UserProfile.objects.get(pk=self.pk)
+            if this.avatar != self.avatar:
+                this.avatar.delete(save=False)
+        except: pass 
+        super(UserProfile, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username
+
+
 
 # Comments of entries
 class Comment(models.Model):

@@ -1,4 +1,5 @@
 from django import forms
+from django.core.files.images import get_image_dimensions
 
 # Default user model
 from django.contrib.auth.models import User
@@ -18,17 +19,17 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('website',)
+        fields = ('website', 'avatar')
 
 class EntryForm(forms.ModelForm):
     class Meta:
         model = Entry
-        fields = ('title', 'description', 'text')
+        fields = ('title', 'description', 'text', 'thumbnail')
 
 class UpdateEntryForm(forms.ModelForm):
     class Meta:
         model = Entry
-        fields = ('title', 'description', 'text')
+        fields = ('title', 'description', 'text', 'thumbnail')
 
 class UpdateUserForm(forms.ModelForm):
     username = forms.CharField(required=True)
@@ -39,6 +40,11 @@ class UpdateUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', )
+
+class UpdateUserProfileForm(forms.ModelForm):    
+    class Meta:
+        model = UserProfile
+        fields = ('avatar',)
 
 class CommentForm(forms.ModelForm):
     class Meta:

@@ -10,6 +10,7 @@
 
 {% block content %}
 
+
 {% if user.is_authenticated %}
    <p> Welcome <b>{{ user }}!</b> </p>
 {% else %}
@@ -77,13 +78,19 @@
 
    </div>
 
-   <div class="col-xs-11" id="div_id_right" onclick='location.href="{% url "entry_detail" pk=entry.pk %}"';>
+   <div class="col-xs-9" id="div_id_right" onclick='location.href="{% url "entry_detail" pk=entry.pk %}"';>
       
       <h4> {{ entry.title }} - {{ entry.views }} Views </h4>
       <p> {{ entry.description }} </p>
       <p> {{ entry.author }} / {{ entry.created_date }} </p>
 
    </div>
+   <div class="col-xs-2" >
+      {% if entry.thumbnail %}
+      <p><img src='/static/{{entry.thumbnail}}' class='img-responsive'/></p>
+      {% endif %}
+   </div>
+
 </div>
 <hr>
 {% endfor %}

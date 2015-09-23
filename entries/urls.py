@@ -20,8 +20,7 @@ urlpatterns = [
     # User registration and authentication process
     url(r'^register/$', views.register, name='register'),
     url(r'^logout/$', views.user_logout, name='logout'),
-    url(r'^login/$', 'django.contrib.auth.views.login', {
-        'template_name': 'entries/login.html',},  name='login'),
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'entries/login.html',},  name='login'),
 
     # Submit new entry
     url(r'^new_entry/', views.new_entry, name='new_entry'),

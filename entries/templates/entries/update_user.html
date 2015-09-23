@@ -3,11 +3,17 @@
 {% load staticfiles %}
 
 {% block content %}
-
-        <form id="form" method="post" action="{% url "update_user" %}">{% csrf_token %}
-            {{ form|crispy }}
+        
+        <form id="form" method="post" action="{% url "update_user" %}" enctype="multipart/form-data">{% csrf_token %}
+            {{ user_form|crispy }}
+            {% if user_profile.avatar %}
+                <br/>
+                <div class="col-xs-2"><img src='/static/{{user_profile.avatar}}' class='img-responsive'/></div>
+            {% endif %}
+            {{ profile_form|crispy}}
         <input class="btn btn-default" type="submit" name="submit" value="Submit" />
         </form>
+
 
 {% endblock %}
 

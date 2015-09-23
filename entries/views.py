@@ -13,8 +13,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 # Ours
-from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, UpdateUserForm, CommentForm, EditCommentForm, SubcommentForm, EditSubcommentForm, TwosubcommentForm, EditTwosubcommentForm
-from .models import Entry, Comment, Subcomment, Twosubcomment
+from .forms import UserForm, UserProfileForm, EntryForm, UpdateEntryForm, UpdateUserForm, CommentForm, EditCommentForm, SubcommentForm, EditSubcommentForm, TwosubcommentForm, EditTwosubcommentForm, UpdateUserProfileForm
+from .models import Entry, Comment, Subcomment, Twosubcomment, UserProfile
+from django.contrib.auth.models import User
 
 # Entries sorted according to rates
 def entries_home(request):
@@ -27,7 +28,7 @@ def entries_home(request):
         context = {'all_entries': all_entries, 
                    'user':user,
                    'up_entries': up_entries,
-                   'down_entries': down_entries, }
+                   'down_entries': down_entries,}
     return render(request, 'entries/entries_home.html', context)
 
 # Entries sorted according to views
@@ -172,13 +173,14 @@ def register(request):
     registered = False
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
             user.set_password(user.password)
             user.save()
             profile = profile_form.save(commit=False)
             profile.user = user
+            profile.avatar = request.FILES.get('avatar', None)
             profile.save()
             registered = True
         else:
@@ -215,12 +217,13 @@ def user_logout(request):
 def new_entry(request):
     user = request.user
     if request.method == 'POST':
-        form  = EntryForm(data=request.POST)
+        form  = EntryForm(request.POST, request.FILES)
         if form.is_valid():
             entry = form.save(commit=False)
             entry.author = user
             entry.rate_up = 1
             entry.rate_total = 1
+            entry.thumbnail = request.FILES.get('thumbnail', None)
             entry.save()
             entry.up_voters.add(user)
             entry.save()
@@ -234,11 +237,12 @@ def update_entry(request, pk):
     entry = get_object_or_404(Entry, pk=pk)
     if entry.author == request.user:
         if request.method == 'POST':
-            form = UpdateEntryForm(request.POST, instance=entry)
+            form = UpdateEntryForm(request.POST, request.FILES, instance=entry)
             if form.is_valid():
                 edited_entry = form.save(commit=False)
                 edited_entry.edited = True
                 edited_entry.updated_date = timezone.now()
+                edited_entry.thumbnail = request.FILES.get('thumbnail', None)
                 edited_entry.save()
                 return HttpResponseRedirect('/entry/' + str(entry.pk))
         else:
@@ -251,14 +255,24 @@ def update_entry(request, pk):
 # Update existing user
 def update_user(request):
     user = request.user
+    user_profile = get_object_or_404(UserProfile, user=user)
+    user_profile = get_object_or_404(UserProfile, user=user)
     if request.method == 'POST':
-        form = UpdateUserForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
+        user_form = UpdateUserForm(request.POST, instance=user)
+        profile_form = UpdateUserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if user_form.is_valid and profile_form.is_valid():
+            user_form.save()
+            profile = profile_form.save(commit=False)
+            profile.avatar = request.FILES.get('avatar', None)
+            profile.save()
             return HttpResponseRedirect('/')
     else:
-        form = UpdateUserForm(instance=request.user)
-    return render(request,'entries/update_user.html', {'form': form})
+        user_form = UpdateUserForm(instance=user)
+        profile_form = UpdateUserProfileForm(instance=user_profile)
+    return render(request,'entries/update_user.html', {
+                                                       'user_form': user_form, 
+                                                       'profile_form': profile_form,
+                                                       'user_profile': user_profile,})
 
 # Update existing comment
 def edit_comment(request, pk):
