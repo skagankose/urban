@@ -234,8 +234,8 @@ def register(request):
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.avatar = request.FILES.get('avatar', None)
-            if profile.avatar == None:
-                profile.avatar = 'img/avatar.png'
+            # if profile.avatar == None:
+            #     profile.avatar = 'img/avatar.png'
             profile.save()
             registered = True
         else:
@@ -279,8 +279,8 @@ def new_entry(request):
             entry.rate_up = 1
             entry.rate_total = 1
             entry.thumbnail = request.FILES.get('thumbnail', None)
-            if entry.thumbnail == None:
-               entry.thumbnail = 'img/thumbnail.png'
+            # if entry.thumbnail == None:
+            #    entry.thumbnail = 'img/thumbnail.png'
             entry.save()
             entry.up_voters.add(user)
             entry.save()
@@ -429,7 +429,7 @@ def entry_search(request):
         text_search = request.POST['text_search']
         if text_search == '':
             text_search = '✗'
-            print(text_search)
+            # print(text_search)
     else:
         text_search = None
     founded_entries = Entry.objects.filter(title__icontains=text_search)
@@ -503,6 +503,19 @@ def entry_vote_down3(request, pk):
 
 # Voting process of comments
 def comment_vote_up(request, pk):
+    # Do this to every vote function
+    # if request.method == 'POST':
+    #     user = request.user
+    #     comment = get_object_or_404(Comment, pk=pk)
+    #     comment.rate_up += 1
+    #     comment.rate_total = comment.rate_up + comment.rate_down
+    #     user.down_comments.remove(comment)
+    #     user.up_comments.add(comment)
+    #     comment.save()
+    #     user.save()
+    #     return HttpResponse(status=204)
+    # else:
+    #     return HttpResponse(status=204)
     user = request.user
     comment = get_object_or_404(Comment, pk=pk)
     comment.rate_up += 1

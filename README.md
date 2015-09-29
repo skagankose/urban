@@ -12,6 +12,7 @@ WARNINGS!
 
 WHAT s LEFT!
 
+    - Secure vote functions with: if request.method == 'POST':
     - Add categories to entries
     - Add profile page
     - Add multiple file upload(?)

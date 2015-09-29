@@ -115,6 +115,7 @@ LOGIN_REDIRECT_URL = '/'
 # Cripsy forms, set default
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+# Set media root for file uploads
 MEDIA_ROOT = os.path.join(BASE_DIR, 'entries/static/')
 MEDIA_URL = ''
 
