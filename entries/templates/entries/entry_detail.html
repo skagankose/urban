@@ -11,16 +11,15 @@
 
 {% block content %}
 
-
       {% if entry.thumbnail %}
       <p><img src='/static/{{entry.thumbnail}}' class='img-responsive'/></p>
       {% endif %}
 
   {% if entry in up_entries %}
-  <h1 id='up_title' style='color:#30BD3D;'> {{ entry.title }}</h1>
-  <h1 id='down_title' style='color:#BB2121;' hidden='true'> {{ entry.title }}</h1>
-  <h1 id='none_title' hidden='true'> {{ entry.title }}</h1>
-  <span id='title-rate-{{ entry.pk }}'>{{ entry.rate_total }}</span>
+  <h1 id='up_title' style='color:#30BD3D;'> {{ entry.title }} </h1>
+  <h1 id='down_title' style='color:#BB2121;' hidden='true'> {{ entry.title }} </h1>
+  <h1 id='none_title' hidden='true'> {{ entry.title }} </h1>
+  <span id='title-rate-{{ entry.pk }}'> {{ entry.rate_total }} </span>
 
   <h2>
     <a href="{% url "entry_vote_up" pk=entry.pk %}" id="thumbs-up-{{ entry.pk }}" class="thumbs_up" hidden='true'><i class="fa fa-thumbs-o-up" id="tup-{{ entry.pk }}"></i></a>
