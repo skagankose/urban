@@ -1,3 +1,7 @@
+# Urban
+
+This is me trying to create a Reddit like social network for my university. You don't need to read the rest of this file.
+
 USED:
 
     - Python 3.4 
