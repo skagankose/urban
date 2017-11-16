@@ -78,15 +78,23 @@ WSGI_APPLICATION = 'urbanPROJ.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-## Postgresql configurations 
+## Postgresql configurations
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'urban_db',
+#         'USER': 'myusername',
+#         'PASSWORD': 'mypassword',
+#         'HOST': '',
+#         'PORT': '',
+#     }
+# }
+
+# Default Configurations
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'urban_db',
-        'USER': 'myusername',
-        'PASSWORD': 'mypassword',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -118,4 +126,3 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # Set media root for file uploads
 MEDIA_ROOT = os.path.join(BASE_DIR, 'entries/static/')
 MEDIA_URL = ''
-

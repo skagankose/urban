@@ -1,0 +1,15 @@
+*.mp4
+*.pdf
+*.zip
+*.pyc
+*.jpg
+*.jpeg
+*.png
+*.DS_STORE
+.com.apple.timemachine.donotpresent
+/precious/migrations/__pycache__
+/precious/migrations/*
+/precious/migrations
+/precious/__pycache__                 
+/just_blog/__pycache__
+db.sqlite3
