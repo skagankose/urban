@@ -1,6 +1,7 @@
 # Urban
 
 This is me trying to create a Reddit like social network for my university.
+(Python 3.4 is used.)
 
 TODO:
 
