@@ -1,13 +1,8 @@
 # Urban
 
-This is me trying to create a Reddit like social network for my university. You don't need to read the rest of this file.
+This is me trying to create a Reddit like social network for my university.
 
-USED:
-
-    - Python 3.4 
-    - Django 1.8
-
-WHAT s LEFT!
+TODO:
 
     - Secure vote functions with: if request.method == 'POST':
     - Add categories to entries
